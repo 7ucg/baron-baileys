@@ -17,7 +17,7 @@
     "url": "git@github.com:7ucg/baron-baileys.git"
   },
   "license": "MIT",
-  "author": "BAron",
+  "author": "Baron",
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
   "files": [
