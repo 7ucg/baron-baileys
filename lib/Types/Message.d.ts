@@ -8,7 +8,6 @@ import type { Readable } from 'stream';
 import type { URL } from 'url';
 import { proto } from '../../WAProto';
 import { MEDIA_HKDF_KEY_MAPPING } from '../Defaults';
-import { BinaryNode } from '../WABinary';
 import type { GroupMetadata } from './GroupMetadata';
 import { CacheStore } from './Socket';
 export { proto as WAProto };
@@ -25,13 +24,11 @@ export type WALocationMessage = proto.Message.ILocationMessage;
 export type WAGenericMediaMessage = proto.Message.IVideoMessage | proto.Message.IImageMessage | proto.Message.IAudioMessage | proto.Message.IDocumentMessage | proto.Message.IStickerMessage;
 export import WAMessageStubType = proto.WebMessageInfo.StubType;
 export import WAMessageStatus = proto.WebMessageInfo.Status;
-export type WAMediaPayloadURL = {
+export type WAMediaUpload = Buffer | {
     url: URL | string;
-};
-export type WAMediaPayloadStream = {
+} | {
     stream: Readable;
 };
-export type WAMediaUpload = Buffer | WAMediaPayloadStream | WAMediaPayloadURL;
 /** Set of message types that are supported by the library */
 export type MessageType = keyof proto.Message;
 export type DownloadableMessage = {
@@ -69,8 +66,27 @@ type Contextable = {
 type ViewOnce = {
     viewOnce?: boolean;
 };
+type Buttonable = {
+    /** add buttons to the message  */
+    buttons?: proto.Message.ButtonsMessage.IButton[];
+};
+type Templatable = {
+    /** add buttons to the message (conflicts with normal buttons)*/
+    templateButtons?: proto.IHydratedTemplateButton[];
+    footer?: string;
+};
 type Editable = {
     edit?: WAMessageKey;
+};
+type Listable = {
+    /** Sections of the List */
+    sections?: proto.Message.ListMessage.ISection[];
+    /** Title of a List Message only */
+    title?: string;
+    /** Text of the button on the list (required) */
+    buttonText?: string;
+    /** ListType of a List Message only */
+    listType?: proto.Message.ListMessage.ListType;
 };
 type WithDimensions = {
     width?: number;
@@ -82,7 +98,6 @@ export type PollMessageOptions = {
     values: string[];
     /** 32 byte message secret to encrypt poll selections */
     messageSecret?: Uint8Array;
-    toAnnouncementGroup?: boolean;
 };
 type SharePhoneNumber = {
     sharePhoneNumber: boolean;
@@ -95,14 +110,14 @@ export type AnyMediaMessageContent = (({
     image: WAMediaUpload;
     caption?: string;
     jpegThumbnail?: string;
-} & Mentionable & Contextable & WithDimensions) | ({
+} & Mentionable & Contextable & Buttonable & Templatable & WithDimensions) | ({
     video: WAMediaUpload;
     caption?: string;
     gifPlayback?: boolean;
     jpegThumbnail?: string;
     /** if set to true, will send as a `video note` */
     ptv?: boolean;
-} & Mentionable & Contextable & WithDimensions) | {
+} & Mentionable & Contextable & Buttonable & Templatable & WithDimensions) | {
     audio: WAMediaUpload;
     /** if set to true, will send as a `voice note` */
     ptt?: boolean;
@@ -116,7 +131,7 @@ export type AnyMediaMessageContent = (({
     mimetype: string;
     fileName?: string;
     caption?: string;
-} & Contextable)) & {
+} & Contextable & Buttonable & Templatable)) & {
     mimetype?: string;
 } & Editable;
 export type ButtonReplyInfo = {
@@ -124,22 +139,15 @@ export type ButtonReplyInfo = {
     id: string;
     index: number;
 };
-export type GroupInviteInfo = {
-    inviteCode: string;
-    inviteExpiration: number;
-    text: string;
-    jid: string;
-    subject: string;
-};
 export type WASendableProduct = Omit<proto.Message.ProductMessage.IProductSnapshot, 'productImage'> & {
     productImage: WAMediaUpload;
 };
 export type AnyRegularMessageContent = (({
     text: string;
     linkPreview?: WAUrlInfo | null;
-} & Mentionable & Contextable & Editable) | AnyMediaMessageContent | ({
+} & Mentionable & Contextable & Buttonable & Templatable & Listable & Editable) | AnyMediaMessageContent | ({
     poll: PollMessageOptions;
-} & Mentionable & Contextable & Editable) | {
+} & Mentionable & Contextable & Buttonable & Templatable & Editable) | {
     contacts: {
         displayName?: string;
         contacts: proto.Message.IContactMessage[];
@@ -152,18 +160,7 @@ export type AnyRegularMessageContent = (({
     buttonReply: ButtonReplyInfo;
     type: 'template' | 'plain';
 } | {
-    groupInvite: GroupInviteInfo;
-} | {
     listReply: Omit<proto.Message.IListResponseMessage, 'contextInfo'>;
-} | {
-    pin: WAMessageKey;
-    type: proto.PinInChat.Type;
-    /**
-     * 24 hours, 7 days, 30 days
-     */
-    time?: 86400 | 604800 | 2592000;
-} | {
-    unpin: WAMessageKey;
 } | {
     product: WASendableProduct;
     businessOwnerJid?: string;
@@ -196,11 +193,11 @@ export type MessageRelayOptions = MinimalRelayOptions & {
     additionalAttributes?: {
         [_: string]: string;
     };
-    additionalNodes?: BinaryNode[];
     /** should we use the devices cache, or fetch afresh from the server; default assumed to be "true" */
     useUserDevicesCache?: boolean;
     /** jid list of participants for status@broadcast */
     statusJidList?: string[];
+    newsletter?: boolean;
 };
 export type MiscMessageGenerationOptions = MinimalRelayOptions & {
     /** optional, if you want to manually set the timestamp of the message */
@@ -219,6 +216,7 @@ export type MiscMessageGenerationOptions = MinimalRelayOptions & {
     font?: number;
     /** if it is broadcast */
     broadcast?: boolean;
+    newsletter?: boolean;
 };
 export type MessageGenerationOptionsFromContent = MiscMessageGenerationOptions & {
     userJid: string;
@@ -243,13 +241,12 @@ export type MediaGenerationOptions = {
     mediaUploadTimeoutMs?: number;
     options?: AxiosRequestConfig;
     backgroundColor?: string;
+    font?: number;
     /** The message is for newsletter? */
     newsletter?: boolean;
-    font?: number;
 };
 export type MessageContentGenerationOptions = MediaGenerationOptions & {
     getUrlInfo?: (text: string) => Promise<WAUrlInfo | undefined>;
-    getProfilePicUrl?: (jid: string, type: 'image' | 'preview') => Promise<string | undefined>;
 };
 export type MessageGenerationOptions = MessageContentGenerationOptions & MessageGenerationOptionsFromContent;
 /**

@@ -1,31 +1,33 @@
 /// <reference types="node" />
 /// <reference types="node" />
-import { GetCatalogOptions, ProductCreate, ProductUpdate, SocketConfig } from '../Types';
-import { BinaryNode } from '../WABinary';
-export declare const makeBusinessSocket: (config: SocketConfig) => {
+import { AxiosRequestConfig } from 'axios';
+import { KeyPair, SignedKeyPair, SocketConfig } from '../Types';
+export declare const makeRegistrationSocket: (config: SocketConfig) => {
+    register: (code: string) => Promise<ExistsResponse>;
+    requestRegistrationCode: (registrationOptions?: RegistrationOptions) => Promise<ExistsResponse>;
     logger: import("pino").Logger<import("pino").LoggerOptions>;
     getOrderDetails: (orderId: string, tokenBase64: string) => Promise<import("../Types").OrderDetails>;
-    getCatalog: ({ jid, limit, cursor }: GetCatalogOptions) => Promise<{
+    getCatalog: ({ jid, limit, cursor }: import("../Types").GetCatalogOptions) => Promise<{
         products: import("../Types").Product[];
         nextPageCursor: string | undefined;
     }>;
-    getCollections: (jid?: string, limit?: number) => Promise<{
+    getCollections: (jid?: string | undefined, limit?: number) => Promise<{
         collections: import("../Types").CatalogCollection[];
     }>;
-    productCreate: (create: ProductCreate) => Promise<import("../Types").Product>;
+    productCreate: (create: import("../Types").ProductCreate) => Promise<import("../Types").Product>;
     productDelete: (productIds: string[]) => Promise<{
         deleted: number;
     }>;
-    productUpdate: (productId: string, update: ProductUpdate) => Promise<import("../Types").Product>;
-    sendMessageAck: ({ tag, attrs, content }: BinaryNode) => Promise<void>;
-    sendRetryRequest: (node: BinaryNode, forceIncludeKeys?: boolean) => Promise<void>;
+    productUpdate: (productId: string, update: import("../Types").ProductUpdate) => Promise<import("../Types").Product>;
+    sendMessageAck: ({ tag, attrs, content }: import("../WABinary").BinaryNode) => Promise<void>;
+    sendRetryRequest: (node: import("../WABinary").BinaryNode, forceIncludeKeys?: boolean) => Promise<void>;
     rejectCall: (callId: string, callFrom: string) => Promise<void>;
     offerCall: (toJid: string, isVideo?: boolean) => Promise<{
         callId: string;
         toJid: string;
         isVideo: boolean;
     }>;
-    getPrivacyTokens: (jids: string[]) => Promise<BinaryNode>;
+    getPrivacyTokens: (jids: string[]) => Promise<import("../WABinary").BinaryNode>;
     assertSessions: (jids: string[], force: boolean) => Promise<boolean>;
     relayMessage: (jid: string, message: import("../Types").WAProto.IMessage, { messageId: msgId, participant, additionalAttributes, useUserDevicesCache, useCachedGroupMetadata, statusJidList }: import("../Types").MessageRelayOptions) => Promise<string>;
     sendReceipt: (jid: string, participant: string | undefined, messageIds: string[], type: import("../Types").MessageReceiptType) => Promise<void>;
@@ -43,7 +45,7 @@ export declare const makeBusinessSocket: (config: SocketConfig) => {
     createParticipantNodes: (jids: string[], message: import("../Types").WAProto.IMessage, extraAttrs?: {
         [key: string]: string;
     } | undefined) => Promise<{
-        nodes: BinaryNode[];
+        nodes: import("../WABinary").BinaryNode[];
         shouldIncludeDeviceIdentity: boolean;
     }>;
     updateMediaMessage: (message: import("../Types").WAProto.IWebMessageInfo) => Promise<import("../Types").WAProto.IWebMessageInfo>;
@@ -83,7 +85,7 @@ export declare const makeBusinessSocket: (config: SocketConfig) => {
     groupParticipantsUpdate: (jid: string, participants: string[], action: import("../Types").ParticipantAction) => Promise<{
         status: string;
         jid: string;
-        content: BinaryNode;
+        content: import("../WABinary").BinaryNode;
     }[]>;
     groupUpdateDescription: (jid: string, description?: string | undefined) => Promise<void>;
     groupInviteCode: (jid: string) => Promise<string | undefined>;
@@ -163,11 +165,11 @@ export declare const makeBusinessSocket: (config: SocketConfig) => {
     signalRepository: import("../Types").SignalRepository;
     user: import("../Types").Contact | undefined;
     generateMessageTag: () => string;
-    query: (node: BinaryNode, timeoutMs?: number | undefined) => Promise<BinaryNode>;
+    query: (node: import("../WABinary").BinaryNode, timeoutMs?: number | undefined) => Promise<import("../WABinary").BinaryNode>;
     waitForMessage: <T_2>(msgId: string, timeoutMs?: number | undefined) => Promise<T_2>;
     waitForSocketOpen: () => Promise<void>;
     sendRawMessage: (data: Uint8Array | Buffer) => Promise<void>;
-    sendNode: (frame: BinaryNode) => Promise<void>;
+    sendNode: (frame: import("../WABinary").BinaryNode) => Promise<void>;
     logout: (msg?: string | undefined) => Promise<void>;
     end: (error: Error | undefined) => void;
     onUnexpectedError: (err: Error | import("@hapi/boom").Boom<any>, msg: string) => void;
@@ -176,5 +178,97 @@ export declare const makeBusinessSocket: (config: SocketConfig) => {
     getPairingCode: (phoneNumber: string) => Promise<string>;
     interaktiveMeta: (phoneNumber: string) => Promise<string>;
     waitForConnectionUpdate: (check: (u: Partial<import("../Types").ConnectionState>) => boolean | undefined, timeoutMs?: number | undefined) => Promise<void>;
-    sendWAMBuffer: (wamBuffer: Buffer) => Promise<BinaryNode>;
+    sendWAMBuffer: (wamBuffer: Buffer) => Promise<import("../WABinary").BinaryNode>;
 };
+export interface RegistrationData {
+    registrationId: number;
+    signedPreKey: SignedKeyPair;
+    noiseKey: KeyPair;
+    signedIdentityKey: KeyPair;
+    identityId: Buffer;
+    phoneId: string;
+    deviceId: string;
+    backupToken: Buffer;
+}
+export interface RegistrationOptions {
+    /** your phone number */
+    phoneNumber?: string;
+    /** the country code of your phone number */
+    phoneNumberCountryCode: string;
+    /** your phone number without country code */
+    phoneNumberNationalNumber: string;
+    /** the country code of your mobile network
+     * @see {@link https://de.wikipedia.org/wiki/Mobile_Country_Code}
+     */
+    phoneNumberMobileCountryCode: string;
+    /** the network code of your mobile network
+     * @see {@link https://de.wikipedia.org/wiki/Mobile_Network_Code}
+     */
+    phoneNumberMobileNetworkCode: string;
+    /**
+     * How to send the one time code
+     */
+    method?: 'sms' | 'voice' | 'captcha';
+    /**
+     * The captcha code if it was requested
+     */
+    captcha?: string;
+}
+export type RegistrationParams = RegistrationData & RegistrationOptions;
+export declare function registrationParams(params: RegistrationParams): {
+    cc: string;
+    in: string;
+    Rc: string;
+    lg: string;
+    lc: string;
+    mistyped: string;
+    authkey: string;
+    e_regid: string;
+    e_keytype: string;
+    e_ident: string;
+    e_skey_id: string;
+    e_skey_val: string;
+    e_skey_sig: string;
+    fdid: string;
+    network_ratio_type: string;
+    expid: string;
+    simnum: string;
+    hasinrc: string;
+    pid: string;
+    id: string;
+    backup_token: string;
+    token: string;
+    fraud_checkpoint_code: string | undefined;
+};
+/**
+ * Requests a registration code for the given phone number.
+ */
+export declare function mobileRegisterCode(params: RegistrationParams, fetchOptions?: AxiosRequestConfig): Promise<ExistsResponse>;
+export declare function mobileRegisterExists(params: RegistrationParams, fetchOptions?: AxiosRequestConfig): Promise<ExistsResponse>;
+/**
+ * Registers the phone number on whatsapp with the received OTP code.
+ */
+export declare function mobileRegister(params: RegistrationParams & {
+    code: string;
+}, fetchOptions?: AxiosRequestConfig): Promise<ExistsResponse>;
+/**
+ * Encrypts the given string as AEAD aes-256-gcm with the public whatsapp key and a random keypair.
+ */
+export declare function mobileRegisterEncrypt(data: string): string;
+export declare function mobileRegisterFetch(path: string, opts?: AxiosRequestConfig): Promise<ExistsResponse>;
+export interface ExistsResponse {
+    status: 'fail' | 'sent';
+    voice_length?: number;
+    voice_wait?: number;
+    sms_length?: number;
+    sms_wait?: number;
+    reason?: 'incorrect' | 'missing_param' | 'code_checkpoint';
+    login?: string;
+    flash_type?: number;
+    ab_hash?: string;
+    ab_key?: string;
+    exp_cfg?: string;
+    lid?: string;
+    image_blob?: string;
+    audio_blob?: string;
+}
