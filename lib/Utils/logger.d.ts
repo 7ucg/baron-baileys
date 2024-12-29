@@ -1,4 +1,2 @@
-declare const _default: import("pino").Logger<{
-    timestamp: () => string;
-}>;
+declare const _default: import("pino").Logger<never, boolean>;
 export default _default;

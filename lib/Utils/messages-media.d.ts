@@ -24,6 +24,20 @@ export declare const encodeBase64EncodedStringForUpload: (b64: string) => string
 export declare const generateProfilePicture: (mediaUpload: WAMediaUpload) => Promise<{
     img: Buffer;
 }>;
+export declare const generateProfilePictureFull: (img: any) => Promise<{
+    img: any;
+}>;
+export declare const generateProfilePictureFP: (buffer: any) => Promise<{
+    img: any;
+    preview: any;
+}>;
+export declare const generatePP: (buffer: any) => Promise<{
+    img: any;
+    preview: any;
+}>;
+export declare const changeprofileFull: (img: any) => Promise<{
+    img: any;
+}>;
 /** gets the SHA256 of the given media message */
 export declare const mediaMessageSHA256B64: (message: WAMessageContent) => string | null | undefined;
 export declare function getAudioDuration(buffer: Buffer | string | Readable): Promise<number | undefined>;
@@ -86,7 +100,7 @@ export declare const encryptedStream: (media: WAMediaUpload, mediaType: MediaTyp
 export type MediaDownloadOptions = {
     startByte?: number;
     endByte?: number;
-    options?: AxiosRequestConfig<any>;
+    options?: AxiosRequestConfig<{}>;
 };
 export declare const getUrlFromDirectPath: (directPath: string) => string;
 export declare const downloadContentFromMessage: ({ mediaKey, directPath, url }: DownloadableMessage, type: MediaType, opts?: MediaDownloadOptions) => Promise<Transform>;
