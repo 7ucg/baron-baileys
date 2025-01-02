@@ -3,9 +3,37 @@
 /// <reference types="node" />
 import { UserFacingSocketConfig } from '../Types';
 declare const makeWASocket: (config: UserFacingSocketConfig) => {
+    communityMetadata: (jid: string) => Promise<import("../Types").GroupMetadata>;
+    communityCreate: (subject: any, body: any) => Promise<import("../Types").GroupMetadata | null>;
+    communityLeave: (id: string) => Promise<void>;
+    communityUpdateSubject: (jid: string, subject: string) => Promise<void>;
+    communityRequestParticipantsList: (jid: string) => Promise<{
+        [key: string]: string;
+    }[]>;
+    communityRequestParticipantsUpdate: (jid: string, participants: string[], action: "reject" | "approve") => Promise<{
+        status: string;
+        jid: string;
+    }[]>;
+    communityParticipantsUpdate: (jid: string, participants: string[], action: import("../Types").ParticipantAction) => Promise<{
+        status: string;
+        jid: string;
+        content: import("..").BinaryNode;
+    }[]>;
+    communityUpdateDescription: (jid: string, description?: string | undefined) => Promise<void>;
+    communityInviteCode: (jid: string) => Promise<string | undefined>;
+    communityRevokeInvite: (jid: string) => Promise<string | undefined>;
+    communityAcceptInvite: (code: string) => Promise<string | undefined>;
+    communityRevokeInviteV4: (communityJid: string, invitedJid: string) => Promise<boolean>;
+    communityAcceptInviteV4: (key: string | import("../Types").WAMessageKey, inviteMessage: import("../Types").WAProto.Message.IGroupInviteMessage) => Promise<string>;
+    communityGetInviteInfo: (code: string) => Promise<import("../Types").GroupMetadata>;
+    communityToggleEphemeral: (jid: string, ephemeralExpiration: number) => Promise<void>;
+    communitySettingUpdate: (jid: string, setting: "announcement" | "locked" | "not_announcement" | "unlocked") => Promise<void>;
+    communityMemberAddMode: (jid: string, mode: "all_member_add" | "admin_add") => Promise<void>;
+    communityJoinApprovalMode: (jid: string, mode: "on" | "off") => Promise<void>;
+    communityFetchAllParticipating: () => Promise<{
+        [_: string]: import("../Types").GroupMetadata;
+    }>;
     logger: import("pino").Logger<never, boolean>;
-    register: (code: string) => Promise<import("./registration").ExistsResponse>;
-    requestRegistrationCode: (registrationOptions?: import("./registration").RegistrationOptions | undefined) => Promise<import("./registration").ExistsResponse>;
     getOrderDetails: (orderId: string, tokenBase64: string) => Promise<import("../Types").OrderDetails>;
     getCatalog: ({ jid, limit, cursor }: import("../Types").GetCatalogOptions) => Promise<{
         products: import("../Types").Product[];
@@ -110,19 +138,12 @@ declare const makeWASocket: (config: UserFacingSocketConfig) => {
     presenceSubscribe: (toJid: string, tcToken?: Buffer | undefined) => Promise<void>;
     profilePictureUrl: (jid: string, type?: "image" | "preview", timeoutMs?: number | undefined) => Promise<string | undefined>;
     onWhatsApp: (...jids: string[]) => Promise<{
-        exists: boolean;
         jid: string;
-    }[]>;
+        exists: unknown;
+    }[] | undefined>;
     fetchBlocklist: () => Promise<string[]>;
-    fetchDisappearingDuration: (...jids: string[]) => Promise<{
-        user: string;
-        duration: number;
-        setAt: Date;
-    }[]>;
-    fetchStatus: (jid: string) => Promise<{
-        status: string | undefined;
-        setAt: Date;
-    } | undefined>;
+    fetchStatus: (...jids: string[]) => Promise<import("..").USyncQueryResultList[] | undefined>;
+    fetchDisappearingDuration: (...jids: string[]) => Promise<import("..").USyncQueryResultList[] | undefined>;
     updateProfilePicture: (jid: string, content: import("../Types").WAMediaUpload) => Promise<void>;
     updateProfilePictureFull: (jid: any, content: any) => Promise<void>;
     updateProfilePictureFull2: (jid: any, content: any) => Promise<void>;
@@ -142,6 +163,8 @@ declare const makeWASocket: (config: UserFacingSocketConfig) => {
     resyncAppState: (collections: readonly ("critical_block" | "critical_unblock_low" | "regular_high" | "regular_low" | "regular")[], isInitialSync: boolean) => Promise<void>;
     chatModify: (mod: import("../Types").ChatModification, jid: string) => Promise<void>;
     cleanDirtyBits: (type: "account_sync" | "groups", fromTimestamp?: string | number | undefined) => Promise<void>;
+    addOrEditContact: (jid: string, contact: import("../Types").ContactAction) => Promise<void>;
+    removeContact: (jid: string) => Promise<void>;
     addLabel: (jid: string, labels: import("../Types/Label").LabelActionBody) => Promise<void>;
     addChatLabel: (jid: string, labelId: string) => Promise<void>;
     removeChatLabel: (jid: string, labelId: string) => Promise<void>;
@@ -151,6 +174,7 @@ declare const makeWASocket: (config: UserFacingSocketConfig) => {
         id: string;
         fromMe?: boolean | undefined;
     }[], star: boolean) => Promise<void>;
+    executeUSyncQuery: (usyncQuery: import("..").USyncQuery) => Promise<import("..").USyncQueryResult | undefined>;
     type: "md";
     ws: import("./Client").WebSocketClient;
     ev: import("../Types").BaileysEventEmitter & {
@@ -177,8 +201,7 @@ declare const makeWASocket: (config: UserFacingSocketConfig) => {
     onUnexpectedError: (err: Error | import("@hapi/boom").Boom<any>, msg: string) => void;
     uploadPreKeys: (count?: number) => Promise<void>;
     uploadPreKeysToServerIfRequired: () => Promise<void>;
-    getPairingCode: (phoneNumber: string) => Promise<string>;
-    interaktiveMeta: (phoneNumber: string) => Promise<string>;
+    requestPairingCode: (phoneNumber: string) => Promise<string>;
     waitForConnectionUpdate: (check: (u: Partial<import("../Types").ConnectionState>) => boolean | undefined, timeoutMs?: number | undefined) => Promise<void>;
     sendWAMBuffer: (wamBuffer: Buffer) => Promise<import("..").BinaryNode>;
 };

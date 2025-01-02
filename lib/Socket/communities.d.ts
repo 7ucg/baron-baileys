@@ -1,23 +1,65 @@
 /// <reference types="long" />
 /// <reference types="node" />
 /// <reference types="node" />
-import { GetCatalogOptions, ProductCreate, ProductUpdate, SocketConfig } from '../Types';
+import { proto } from '../../WAProto';
+import { GroupMetadata, ParticipantAction, SocketConfig, WAMessageKey } from '../Types';
 import { BinaryNode } from '../WABinary';
-export declare const makeBusinessSocket: (config: SocketConfig) => {
+export declare const makeCommunitiesSocket: (config: SocketConfig) => {
+    communityMetadata: (jid: string) => Promise<GroupMetadata>;
+    communityCreate: (subject: any, body: any) => Promise<GroupMetadata | null>;
+    communityLeave: (id: string) => Promise<void>;
+    communityUpdateSubject: (jid: string, subject: string) => Promise<void>;
+    communityRequestParticipantsList: (jid: string) => Promise<{
+        [key: string]: string;
+    }[]>;
+    communityRequestParticipantsUpdate: (jid: string, participants: string[], action: 'approve' | 'reject') => Promise<{
+        status: string;
+        jid: string;
+    }[]>;
+    communityParticipantsUpdate: (jid: string, participants: string[], action: ParticipantAction) => Promise<{
+        status: string;
+        jid: string;
+        content: BinaryNode;
+    }[]>;
+    communityUpdateDescription: (jid: string, description?: string) => Promise<void>;
+    communityInviteCode: (jid: string) => Promise<string | undefined>;
+    communityRevokeInvite: (jid: string) => Promise<string | undefined>;
+    communityAcceptInvite: (code: string) => Promise<string | undefined>;
+    /**
+     * revoke a v4 invite for someone
+     * @param communityJid community jid
+     * @param invitedJid jid of person you invited
+     * @returns true if successful
+     */
+    communityRevokeInviteV4: (communityJid: string, invitedJid: string) => Promise<boolean>;
+    /**
+     * accept a CommunityInviteMessage
+     * @param key the key of the invite message, or optionally only provide the jid of the person who sent the invite
+     * @param inviteMessage the message to accept
+     */
+    communityAcceptInviteV4: (key: string | WAMessageKey, inviteMessage: proto.Message.IGroupInviteMessage) => Promise<string>;
+    communityGetInviteInfo: (code: string) => Promise<GroupMetadata>;
+    communityToggleEphemeral: (jid: string, ephemeralExpiration: number) => Promise<void>;
+    communitySettingUpdate: (jid: string, setting: 'announcement' | 'not_announcement' | 'locked' | 'unlocked') => Promise<void>;
+    communityMemberAddMode: (jid: string, mode: 'admin_add' | 'all_member_add') => Promise<void>;
+    communityJoinApprovalMode: (jid: string, mode: 'on' | 'off') => Promise<void>;
+    communityFetchAllParticipating: () => Promise<{
+        [_: string]: GroupMetadata;
+    }>;
     logger: import("pino").Logger<never, boolean>;
     getOrderDetails: (orderId: string, tokenBase64: string) => Promise<import("../Types").OrderDetails>;
-    getCatalog: ({ jid, limit, cursor }: GetCatalogOptions) => Promise<{
+    getCatalog: ({ jid, limit, cursor }: import("../Types").GetCatalogOptions) => Promise<{
         products: import("../Types").Product[];
         nextPageCursor: string | undefined;
     }>;
-    getCollections: (jid?: string, limit?: number) => Promise<{
+    getCollections: (jid?: string | undefined, limit?: number) => Promise<{
         collections: import("../Types").CatalogCollection[];
     }>;
-    productCreate: (create: ProductCreate) => Promise<import("../Types").Product>;
+    productCreate: (create: import("../Types").ProductCreate) => Promise<import("../Types").Product>;
     productDelete: (productIds: string[]) => Promise<{
         deleted: number;
     }>;
-    productUpdate: (productId: string, update: ProductUpdate) => Promise<import("../Types").Product>;
+    productUpdate: (productId: string, update: import("../Types").ProductUpdate) => Promise<import("../Types").Product>;
     sendMessageAck: ({ tag, attrs, content }: BinaryNode) => Promise<void>;
     sendRetryRequest: (node: BinaryNode, forceIncludeKeys?: boolean) => Promise<void>;
     rejectCall: (callId: string, callFrom: string) => Promise<void>;
@@ -26,29 +68,29 @@ export declare const makeBusinessSocket: (config: SocketConfig) => {
         toJid: string;
         isVideo: boolean;
     }>;
-    fetchMessageHistory: (count: number, oldestMsgKey: import("../Types").WAMessageKey, oldestMsgTimestamp: number | import("long").Long) => Promise<string>;
-    requestPlaceholderResend: (messageKey: import("../Types").WAMessageKey) => Promise<string | undefined>;
+    fetchMessageHistory: (count: number, oldestMsgKey: WAMessageKey, oldestMsgTimestamp: number | import("long").Long) => Promise<string>;
+    requestPlaceholderResend: (messageKey: WAMessageKey) => Promise<string | undefined>;
     getPrivacyTokens: (jids: string[]) => Promise<BinaryNode>;
     assertSessions: (jids: string[], force: boolean) => Promise<boolean>;
-    relayMessage: (jid: string, message: import("../Types").WAProto.IMessage, { messageId: msgId, participant, additionalAttributes, additionalNodes, useUserDevicesCache, useCachedGroupMetadata, statusJidList }: import("../Types").MessageRelayOptions) => Promise<string>;
+    relayMessage: (jid: string, message: proto.IMessage, { messageId: msgId, participant, additionalAttributes, additionalNodes, useUserDevicesCache, useCachedGroupMetadata, statusJidList }: import("../Types").MessageRelayOptions) => Promise<string>;
     sendReceipt: (jid: string, participant: string | undefined, messageIds: string[], type: import("../Types").MessageReceiptType) => Promise<void>;
-    sendReceipts: (keys: import("../Types").WAMessageKey[], type: import("../Types").MessageReceiptType) => Promise<void>;
-    readMessages: (keys: import("../Types").WAMessageKey[]) => Promise<void>;
+    sendReceipts: (keys: WAMessageKey[], type: import("../Types").MessageReceiptType) => Promise<void>;
+    readMessages: (keys: WAMessageKey[]) => Promise<void>;
     refreshMediaConn: (forceGet?: boolean) => Promise<import("../Types").MediaConnInfo>;
     waUploadToServer: import("../Types").WAMediaUploadFunction;
     fetchPrivacySettings: (force?: boolean) => Promise<{
         [_: string]: string;
     }>;
-    sendPeerDataOperationMessage: (pdoMessage: import("../Types").WAProto.Message.IPeerDataOperationRequestMessage) => Promise<string>;
-    createParticipantNodes: (jids: string[], message: import("../Types").WAProto.IMessage, extraAttrs?: {
+    sendPeerDataOperationMessage: (pdoMessage: proto.Message.IPeerDataOperationRequestMessage) => Promise<string>;
+    createParticipantNodes: (jids: string[], message: proto.IMessage, extraAttrs?: {
         [key: string]: string;
     } | undefined) => Promise<{
         nodes: BinaryNode[];
         shouldIncludeDeviceIdentity: boolean;
     }>;
     getUSyncDevices: (jids: string[], useCache: boolean, ignoreZeroDevices: boolean) => Promise<import("../WABinary").JidWithDevice[]>;
-    updateMediaMessage: (message: import("../Types").WAProto.IWebMessageInfo) => Promise<import("../Types").WAProto.IWebMessageInfo>;
-    sendMessage: (jid: string, content: import("../Types").AnyMessageContent, options?: import("../Types").MiscMessageGenerationOptions) => Promise<import("../Types").WAProto.WebMessageInfo | undefined>;
+    updateMediaMessage: (message: proto.IWebMessageInfo) => Promise<proto.IWebMessageInfo>;
+    sendMessage: (jid: string, content: import("../Types").AnyMessageContent, options?: import("../Types").MiscMessageGenerationOptions) => Promise<proto.WebMessageInfo | undefined>;
     subscribeNewsletterUpdates: (jid: string) => Promise<{
         duration: string;
     }>;
@@ -70,8 +112,8 @@ export declare const makeBusinessSocket: (config: SocketConfig) => {
     newsletterReactMessage: (jid: string, server_id: string, code?: string | undefined) => Promise<void>;
     newsletterFetchMessages: (type: "invite" | "jid", key: string, count: number, after?: number | undefined) => Promise<import("../Types").NewsletterFetchedUpdate[]>;
     newsletterFetchUpdates: (jid: string, count: number, after?: number | undefined, since?: number | undefined) => Promise<import("../Types").NewsletterFetchedUpdate[]>;
-    groupMetadata: (jid: string) => Promise<import("../Types").GroupMetadata>;
-    groupCreate: (subject: string, participants: string[]) => Promise<import("../Types").GroupMetadata>;
+    groupMetadata: (jid: string) => Promise<GroupMetadata>;
+    groupCreate: (subject: string, participants: string[]) => Promise<GroupMetadata>;
     groupLeave: (id: string) => Promise<void>;
     groupUpdateSubject: (jid: string, subject: string) => Promise<void>;
     groupRequestParticipantsList: (jid: string) => Promise<{
@@ -81,7 +123,7 @@ export declare const makeBusinessSocket: (config: SocketConfig) => {
         status: string;
         jid: string;
     }[]>;
-    groupParticipantsUpdate: (jid: string, participants: string[], action: import("../Types").ParticipantAction) => Promise<{
+    groupParticipantsUpdate: (jid: string, participants: string[], action: ParticipantAction) => Promise<{
         status: string;
         jid: string;
         content: BinaryNode;
@@ -91,19 +133,19 @@ export declare const makeBusinessSocket: (config: SocketConfig) => {
     groupRevokeInvite: (jid: string) => Promise<string | undefined>;
     groupAcceptInvite: (code: string) => Promise<string | undefined>;
     groupRevokeInviteV4: (groupJid: string, invitedJid: string) => Promise<boolean>;
-    groupAcceptInviteV4: (key: string | import("../Types").WAMessageKey, inviteMessage: import("../Types").WAProto.Message.IGroupInviteMessage) => Promise<string>;
-    groupGetInviteInfo: (code: string) => Promise<import("../Types").GroupMetadata>;
+    groupAcceptInviteV4: (key: string | WAMessageKey, inviteMessage: proto.Message.IGroupInviteMessage) => Promise<string>;
+    groupGetInviteInfo: (code: string) => Promise<GroupMetadata>;
     groupToggleEphemeral: (jid: string, ephemeralExpiration: number) => Promise<void>;
     groupSettingUpdate: (jid: string, setting: "announcement" | "locked" | "not_announcement" | "unlocked") => Promise<void>;
     groupMemberAddMode: (jid: string, mode: "all_member_add" | "admin_add") => Promise<void>;
     groupJoinApprovalMode: (jid: string, mode: "on" | "off") => Promise<void>;
     groupFetchAllParticipating: () => Promise<{
-        [_: string]: import("../Types").GroupMetadata;
+        [_: string]: GroupMetadata;
     }>;
     processingMutex: {
         mutex<T>(code: () => T | Promise<T>): Promise<T>;
     };
-    upsertMessage: (msg: import("../Types").WAProto.IWebMessageInfo, type: import("../Types").MessageUpsertType) => Promise<void>;
+    upsertMessage: (msg: proto.IWebMessageInfo, type: import("../Types").MessageUpsertType) => Promise<void>;
     appPatch: (patchCreate: import("../Types").WAPatchCreate) => Promise<void>;
     sendPresenceUpdate: (type: import("../Types").WAPresence, toJid?: string | undefined) => Promise<void>;
     presenceSubscribe: (toJid: string, tcToken?: Buffer | undefined) => Promise<void>;
@@ -176,3 +218,4 @@ export declare const makeBusinessSocket: (config: SocketConfig) => {
     waitForConnectionUpdate: (check: (u: Partial<import("../Types").ConnectionState>) => boolean | undefined, timeoutMs?: number | undefined) => Promise<void>;
     sendWAMBuffer: (wamBuffer: Buffer) => Promise<BinaryNode>;
 };
+export declare const extractCommunityMetadata: (result: BinaryNode) => GroupMetadata;

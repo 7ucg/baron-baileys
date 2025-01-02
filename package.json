@@ -1,6 +1,6 @@
 {
   "name": "baron-baileys",
-  "version": "1.0.5",
+  "version": "1.0.7",
   "description": "WhatsApp API",
   "keywords": [
     "whatsapp",
@@ -26,14 +26,12 @@
     "WASignalGroup/*.js"
   ],
   "scripts": {
- 
     "example": "node --inspect -r ts-node/register Example/example.ts"
-    
   },
   "dependencies": {
     "@adiwajshing/keyed-db": "^0.2.4",
-    "@queenanya/eslint-config": "github:whiskeysockets/eslint-config",
     "@hapi/boom": "^10.0.1",
+    "@queenanya/eslint-config": "github:whiskeysockets/eslint-config",
     "async-lock": "^1.4.1",
     "audio-decode": "^2.2.0",
     "axios": "^1.7.3",
