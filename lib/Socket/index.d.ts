@@ -1,7 +1,7 @@
 /// <reference types="long" />
 /// <reference types="node" />
 /// <reference types="node" />
-import { UserFacingSocketConfig } from '../Types';
+import { UserFacingSocketConfig, WAMessageKey } from '../Types';
 declare const makeWASocket: (config: UserFacingSocketConfig) => {
     communityMetadata: (jid: string) => Promise<import("../Types").GroupMetadata>;
     communityCreate: (subject: any, body: any) => Promise<import("../Types").GroupMetadata | null>;
@@ -55,7 +55,7 @@ declare const makeWASocket: (config: UserFacingSocketConfig) => {
         toJid: string;
         isVideo: boolean;
     }>;
-    fetchMessageHistory: (count: number, oldestMsgKey: import("../Types").WAMessageKey, oldestMsgTimestamp: number | import("long").Long) => Promise<string>;
+    fetchMessageHistory: (count: number, oldestMsgKey: WAMessageKey, oldestMsgTimestamp: number | Long) => Promise<string>;
     requestPlaceholderResend: (messageKey: import("../Types").WAMessageKey) => Promise<string | undefined>;
     getPrivacyTokens: (jids: string[]) => Promise<import("..").BinaryNode>;
     assertSessions: (jids: string[], force: boolean) => Promise<boolean>;
@@ -176,7 +176,7 @@ declare const makeWASocket: (config: UserFacingSocketConfig) => {
     }[], star: boolean) => Promise<void>;
     executeUSyncQuery: (usyncQuery: import("..").USyncQuery) => Promise<import("..").USyncQueryResult | undefined>;
     type: "md";
-    ws: import("./Client").WebSocketClient;
+    ws:  import("./Client/mobile-socket-client").MobileSocketClient | import("./Client").WebSocketClient;
     ev: import("../Types").BaileysEventEmitter & {
         process(handler: (events: Partial<import("../Types").BaileysEventMap>) => void | Promise<void>): () => void;
         buffer(): void;

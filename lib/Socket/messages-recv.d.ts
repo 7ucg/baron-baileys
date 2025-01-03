@@ -134,7 +134,7 @@ export declare const makeMessagesRecvSocket: (config: SocketConfig) => {
     }[], star: boolean) => Promise<void>;
     executeUSyncQuery: (usyncQuery: import("..").USyncQuery) => Promise<import("..").USyncQueryResult | undefined>;
     type: "md";
-    ws: import("./Client").WebSocketClient;
+    ws:  import("./Client/mobile-socket-client").MobileSocketClient | import("./Client").WebSocketClient;
     ev: import("../Types").BaileysEventEmitter & {
         process(handler: (events: Partial<import("../Types").BaileysEventMap>) => void | Promise<void>): () => void;
         buffer(): void;
