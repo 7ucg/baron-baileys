@@ -1,7 +1,7 @@
 /// <reference types="node" />
 /// <reference types="node" />
 import { proto } from '../../WAProto';
-import { GroupMetadata, ParticipantAction, SocketConfig, WAMessageKey } from '../Types';
+import { GroupMetadata, ParticipantAction, SocketConfig } from '../Types';
 import { BinaryNode } from '../WABinary';
 export declare const makeGroupsSocket: (config: SocketConfig) => {
     groupMetadata: (jid: string) => Promise<GroupMetadata>;
@@ -36,7 +36,7 @@ export declare const makeGroupsSocket: (config: SocketConfig) => {
      * @param key the key of the invite message, or optionally only provide the jid of the person who sent the invite
      * @param inviteMessage the message to accept
      */
-    groupAcceptInviteV4: (key: string | WAMessageKey, inviteMessage: proto.Message.IGroupInviteMessage) => Promise<string>;
+    groupAcceptInviteV4: (key: string | proto.IMessageKey, inviteMessage: proto.Message.IGroupInviteMessage) => Promise<string>;
     groupGetInviteInfo: (code: string) => Promise<GroupMetadata>;
     groupToggleEphemeral: (jid: string, ephemeralExpiration: number) => Promise<void>;
     groupSettingUpdate: (jid: string, setting: 'announcement' | 'not_announcement' | 'locked' | 'unlocked') => Promise<void>;
@@ -57,15 +57,15 @@ export declare const makeGroupsSocket: (config: SocketConfig) => {
     presenceSubscribe: (toJid: string, tcToken?: Buffer | undefined) => Promise<void>;
     profilePictureUrl: (jid: string, type?: "image" | "preview", timeoutMs?: number | undefined) => Promise<string | undefined>;
     onWhatsApp: (...jids: string[]) => Promise<{
+        exists: boolean;
         jid: string;
-        exists: unknown;
-    }[] | undefined>;
+    }[]>;
     fetchBlocklist: () => Promise<string[]>;
-    fetchStatus: (...jids: string[]) => Promise<import("..").USyncQueryResultList[] | undefined>;
-    fetchDisappearingDuration: (...jids: string[]) => Promise<import("..").USyncQueryResultList[] | undefined>;
+    fetchStatus: (jid: string) => Promise<{
+        status: string | undefined;
+        setAt: Date;
+    } | undefined>;
     updateProfilePicture: (jid: string, content: import("../Types").WAMediaUpload) => Promise<void>;
-    updateProfilePictureFull: (jid: any, content: any) => Promise<void>;
-    updateProfilePictureFull2: (jid: any, content: any) => Promise<void>;
     removeProfilePicture: (jid: string) => Promise<void>;
     updateProfileStatus: (status: string) => Promise<void>;
     updateProfileName: (name: string) => Promise<void>;
@@ -82,8 +82,6 @@ export declare const makeGroupsSocket: (config: SocketConfig) => {
     resyncAppState: (collections: readonly ("critical_block" | "critical_unblock_low" | "regular_high" | "regular_low" | "regular")[], isInitialSync: boolean) => Promise<void>;
     chatModify: (mod: import("../Types").ChatModification, jid: string) => Promise<void>;
     cleanDirtyBits: (type: "account_sync" | "groups", fromTimestamp?: string | number | undefined) => Promise<void>;
-    addOrEditContact: (jid: string, contact: import("../Types").ContactAction) => Promise<void>;
-    removeContact: (jid: string) => Promise<void>;
     addLabel: (jid: string, labels: import("../Types/Label").LabelActionBody) => Promise<void>;
     addChatLabel: (jid: string, labelId: string) => Promise<void>;
     removeChatLabel: (jid: string, labelId: string) => Promise<void>;
@@ -93,7 +91,6 @@ export declare const makeGroupsSocket: (config: SocketConfig) => {
         id: string;
         fromMe?: boolean | undefined;
     }[], star: boolean) => Promise<void>;
-    executeUSyncQuery: (usyncQuery: import("..").USyncQuery) => Promise<import("..").USyncQueryResult | undefined>;
     type: "md";
     ws: import("./Client").WebSocketClient;
     ev: import("../Types").BaileysEventEmitter & {

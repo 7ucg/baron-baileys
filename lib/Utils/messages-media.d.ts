@@ -24,20 +24,6 @@ export declare const encodeBase64EncodedStringForUpload: (b64: string) => string
 export declare const generateProfilePicture: (mediaUpload: WAMediaUpload) => Promise<{
     img: Buffer;
 }>;
-export declare const generateProfilePictureFull: (img: any) => Promise<{
-    img: any;
-}>;
-export declare const generateProfilePictureFP: (buffer: any) => Promise<{
-    img: any;
-    preview: any;
-}>;
-export declare const generatePP: (buffer: any) => Promise<{
-    img: any;
-    preview: any;
-}>;
-export declare const changeprofileFull: (img: any) => Promise<{
-    img: any;
-}>;
 /** gets the SHA256 of the given media message */
 export declare const mediaMessageSHA256B64: (message: WAMessageContent) => string | null | undefined;
 export declare function getAudioDuration(buffer: Buffer | string | Readable): Promise<number | undefined>;
@@ -78,15 +64,6 @@ type EncryptedStreamOptions = {
     logger?: Logger;
     opts?: AxiosRequestConfig;
 };
-export declare const prepareStream: (media: WAMediaUpload, mediaType: MediaType, { logger, saveOriginalFileIfRequired, opts }?: EncryptedStreamOptions) => Promise<{
-    mediaKey: undefined;
-    encWriteStream: Buffer;
-    fileLength: number;
-    fileSha256: Buffer;
-    fileEncSha256: undefined;
-    bodyPath: string | undefined;
-    didSaveToTmpPath: boolean;
-}>;
 export declare const encryptedStream: (media: WAMediaUpload, mediaType: MediaType, { logger, saveOriginalFileIfRequired, opts }?: EncryptedStreamOptions) => Promise<{
     mediaKey: Buffer;
     encWriteStream: Readable;
@@ -116,7 +93,7 @@ export declare const getWAUploadToServer: ({ customUploadHosts, fetchAgent, logg
  */
 export declare const encryptMediaRetryRequest: (key: proto.IMessageKey, mediaKey: Buffer | Uint8Array, meId: string) => BinaryNode;
 export declare const decodeMediaRetryNode: (node: BinaryNode) => {
-    key: import("../Types").WAMessageKey;
+    key: proto.IMessageKey;
     media?: {
         ciphertext: Uint8Array;
         iv: Uint8Array;

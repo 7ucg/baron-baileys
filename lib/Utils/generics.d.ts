@@ -5,17 +5,7 @@ import { Logger } from 'pino';
 import { proto } from '../../WAProto';
 import { BaileysEventEmitter, BaileysEventMap, BrowsersMap, ConnectionState, WACallUpdateType, WAVersion } from '../Types';
 import { BinaryNode } from '../WABinary';
-/**
-const COMPANION_PLATFORM_MAP = {
-    'Chrome': '49',
-    'Edge': '50',
-    'Firefox': '51',
-    'Opera': '53',
-    'Safari': '54'
-}
-*/
 export declare const Browsers: BrowsersMap;
-/** Other Browser Support for Paircode */
 export declare const getPlatformId: (browser: string) => any;
 export declare const BufferJSON: {
     replacer: (k: any, value: any) => any;
@@ -25,7 +15,6 @@ export declare const getKeyAuthor: (key: proto.IMessageKey | undefined | null, m
 export declare const writeRandomPadMax16: (msg: Uint8Array) => Buffer;
 export declare const unpadRandomMax16: (e: Uint8Array | Buffer) => Uint8Array;
 export declare const encodeWAMessage: (message: proto.IMessage) => Buffer;
-export declare const encodeNewsletterMessage: (message: proto.IMessage) => Uint8Array;
 export declare const generateRegistrationId: () => number;
 export declare const encodeBigEndian: (e: number, t?: number) => Uint8Array;
 export declare const toNumber: (t: Long | number | null | undefined) => number;
@@ -45,29 +34,15 @@ export declare const delayCancellable: (ms: number) => {
 };
 export declare function promiseTimeout<T>(ms: number | undefined, promise: (resolve: (v: T) => void, reject: (error: any) => void) => void): Promise<T>;
 export declare const generateMessageIDV2: (userId?: string) => string;
-export declare const generateMessageIDV3: (userId?: string) => string;
 export declare const generateMessageID: () => string;
 export declare function bindWaitForEvent<T extends keyof BaileysEventMap>(ev: BaileysEventEmitter, event: T): (check: (u: BaileysEventMap[T]) => boolean | undefined, timeoutMs?: number) => Promise<void>;
 export declare const bindWaitForConnectionUpdate: (ev: BaileysEventEmitter) => (check: (u: Partial<ConnectionState>) => boolean | undefined, timeoutMs?: number) => Promise<void>;
 export declare const printQRIfNecessaryListener: (ev: BaileysEventEmitter, logger: Logger) => void;
 /**
- * utility that fetches latest baileys version from the main branch.
- * Use to ensure your WA connection is always on the latest version
- */
-export declare const fetchLatestBaileysVersion: (options?: AxiosRequestConfig<any>) => Promise<{
-    version: number[];
-    isLatest: boolean;
-    error?: undefined;
-} | {
-    version: WAVersion;
-    isLatest: boolean;
-    error: any;
-}>;
-/**
  * utility that fetches latest baileys version from the master branch.
  * Use to ensure your WA connection is always on the latest version
  */
-export declare const fetchLatestBaileysVersion2: (options?: AxiosRequestConfig<any>) => Promise<{
+export declare const fetchLatestBaileysVersion: (options?: AxiosRequestConfig<{}>) => Promise<{
     version: WAVersion;
     isLatest: boolean;
     error?: undefined;

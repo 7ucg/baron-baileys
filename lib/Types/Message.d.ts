@@ -16,9 +16,7 @@ export type WAMessage = proto.IWebMessageInfo;
 export type WAMessageContent = proto.IMessage;
 export type WAContactMessage = proto.Message.IContactMessage;
 export type WAContactsArrayMessage = proto.Message.IContactsArrayMessage;
-export type WAMessageKey = proto.IMessageKey & {
-    server_id?: string;
-};
+export type WAMessageKey = proto.IMessageKey;
 export type WATextMessage = proto.Message.IExtendedTextMessage;
 export type WAContextInfo = proto.IContextInfo;
 export type WALocationMessage = proto.Message.ILocationMessage;
@@ -163,8 +161,6 @@ export type AnyRegularMessageContent = (({
      */
     time?: 86400 | 604800 | 2592000;
 } | {
-    unpin: WAMessageKey;
-} | {
     product: WASendableProduct;
     businessOwnerJid?: string;
     body?: string;
@@ -223,16 +219,13 @@ export type MiscMessageGenerationOptions = MinimalRelayOptions & {
 export type MessageGenerationOptionsFromContent = MiscMessageGenerationOptions & {
     userJid: string;
 };
-export type WAMediaUploadFunctionOpts = {
+export type WAMediaUploadFunction = (readStream: Readable, opts: {
     fileEncSha256B64: string;
     mediaType: MediaType;
-    newsletter?: boolean;
     timeoutMs?: number;
-};
-export type WAMediaUploadFunction = (readStream: Readable | Buffer, opts: WAMediaUploadFunctionOpts) => Promise<{
+}) => Promise<{
     mediaUrl: string;
     directPath: string;
-    handle?: string;
 }>;
 export type MediaGenerationOptions = {
     logger?: Logger;
@@ -243,8 +236,6 @@ export type MediaGenerationOptions = {
     mediaUploadTimeoutMs?: number;
     options?: AxiosRequestConfig;
     backgroundColor?: string;
-    /** The message is for newsletter? */
-    newsletter?: boolean;
     font?: number;
 };
 export type MessageContentGenerationOptions = MediaGenerationOptions & {

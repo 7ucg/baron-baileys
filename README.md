@@ -1,17 +1,11 @@
-# Note:
-**@7ucg/baron-baileys is another version of Baileys that was originally created by Adhiraj Singh. @7ucg/baron-baileys is Maintained and Up-to-dated with all lestest feature [Thanks for Visiting Here If You Any Questions/Query Please Open A Issue In GitHub Repository]**
-
-## Maintainer Of @7ucg/baron-baileys
- ** •Team PikaBotz. **
-
-# 7ucg/baron-baileys - Typescript/Javascript WhatsApp Web API
+# Baileys - Typescript/Javascript WhatsApp Web API
 
 ### Important Note
 
 This library was originally a project for **CS-2362 at Ashoka University** and is in no way affiliated with or endorsed by WhatsApp. Use at your own discretion. Do not spam people with this. We discourage any stalkerware, bulk or automated messaging usage. 
 
 #### Liability and License Notice
-Baileys and its maintainers cannot be held liable for misuse of this application, as stated in the [MIT license](https://github.com/7ucg/baron-baileys/blob/master/LICENSE).
+Baileys and its maintainers cannot be held liable for misuse of this application, as stated in the [MIT license](https://github.com/WhiskeySockets/Baileys/blob/master/LICENSE).
 The maintainers of Baileys do not in any way condone the use of this application in practices that violate the Terms of Service of WhatsApp. The maintainers of this application call upon the personal responsibility of its users to use this application in a fair way, as it is intended to be used.
 ##
 
@@ -39,17 +33,17 @@ To run the example script, download or clone the repo and then type the followin
 
 Use the stable version:
 ```
-yarn add @7ucg/baron-baileys
+yarn add @whiskeysockets/baileys
 ```
 
 Use the edge version (no guarantee of stability, but latest fixes + features)
 ```
-yarn add github:7ucg/baron-baileys
+yarn add github:WhiskeySockets/Baileys
 ```
 
 Then import your code using:
 ``` ts 
-import makeWASocket from '@7ucg/baron-baileys'
+import makeWASocket from '@whiskeysockets/baileys'
 ```
 
 ## Unit Tests
@@ -61,7 +55,7 @@ TODO
 WhatsApp provides a multi-device API that allows Baileys to be authenticated as a second WhatsApp client by scanning a QR code with WhatsApp on your phone.
 
 ``` ts
-import makeWASocket, { DisconnectReason } from '@7ucg/baron-baileys'
+import makeWASocket, { DisconnectReason } from '@whiskeysockets/baileys'
 import { Boom } from '@hapi/boom'
 
 async function connectToWhatsApp () {
@@ -189,7 +183,7 @@ You obviously don't want to keep scanning the QR code every time you want to con
 
 So, you can load the credentials to log back in:
 ``` ts
-import makeWASocket, { BufferJSON, useMultiFileAuthState } from '@7ucg/baron-baileys'
+import makeWASocket, { BufferJSON, useMultiFileAuthState } from '@whiskeysockets/baileys'
 import * as fs from 'fs'
 
 // utility function to help save the auth state in a single folder
@@ -304,7 +298,7 @@ Baileys does not come with a defacto storage for chats, contacts, or messages. H
 It can be used as follows:
 
 ``` ts
-import makeWASocket, { makeInMemoryStore } from '@7ucg/baron-baileys'
+import makeWASocket, { makeInMemoryStore } from '@whiskeysockets/baileys'
 // the store maintains the data of the WA connection in memory
 // can be written out to a file & read from it
 const store = makeInMemoryStore({ })
@@ -326,7 +320,7 @@ sock.ev.on('chats.upsert', () => {
     console.log('got chats', store.chats.all())
 })
 
-sock.ev.on('contacts.set', () => {
+sock.ev.on('contacts.upsert', () => {
     console.log('got contacts', Object.values(store.contacts))
 })
 
@@ -343,7 +337,7 @@ The store also provides some simple functions such as `loadMessages` that utiliz
 ### Non-Media Messages
 
 ``` ts
-import { MessageType, MessageOptions, Mimetype } from '@7ucg/baron-baileys'
+import { MessageType, MessageOptions, Mimetype } from '@whiskeysockets/baileys'
 
 const id = 'abcd@s.whatsapp.net' // the WhatsApp ID 
 // send a simple text!
@@ -402,7 +396,7 @@ Sending media (video, stickers, images) is easier & more efficient than ever.
 - When specifying a media url, Baileys never loads the entire buffer into memory; it even encrypts the media as a readable stream.
 
 ``` ts
-import { MessageType, MessageOptions, Mimetype } from '@7ucg/baron-baileys'
+import { MessageType, MessageOptions, Mimetype } from '@whiskeysockets/baileys'
 // Sending gifs
 await sock.sendMessage(
     id, 
@@ -452,7 +446,7 @@ await sock.sendMessage(
                                     Do not enter this field if you want to automatically generate a thumb
                                 */
         mimetype: Mimetype.pdf, /* (for media messages) specify the type of media (optional for all media types except documents),
-                                    import {Mimetype} from '@7ucg/baron-baileys'
+                                    import {Mimetype} from '@whiskeysockets/baileys'
                                 */
         fileName: 'somefile.pdf', // (for media messages) file name for the media
         /* will send audio messages as voice notes, if set to true */
@@ -511,7 +505,7 @@ The presence expires after about 10 seconds.
 If you want to save the media you received
 ``` ts
 import { writeFile } from 'fs/promises'
-import { downloadMediaMessage } from '@7ucg/baron-baileys'
+import { downloadMediaMessage } from '@whiskeysockets/baileys'
 
 sock.ev.on('messages.upsert', async ({ messages }) => {
     const m = messages[0]
@@ -798,42 +792,6 @@ Of course, replace ``` xyz ``` with an actual ID.
     console.log(response)
     ```
 
-
-## Channel
-- To get newsletter info from code
-    ```ts
-    // https://whatsapp.com/channel/key
-    const key = '123wedss972279'
-    const result = await sock.getNewsletterInfo(key)
-    console.log(result)
-    ```
-- To create newsletter
-    ```ts
-    const result = await sock.createNewsLetter('Name newsletter', 'Description news letter', { url: 'url profile pictur' })
-    console.log(result)
-    ```
-- To get subscribed newsletters
-    ```ts
-
-const result = await sock.getSubscribedNewsletters()
-    console.log(result)
-    ```
-- To toggle mute newsletters
-    ```ts
-    const result = await sock.toggleMuteNewsletter(jid, true) // true to mute, false to unmute
-    console.log(result)
-    ```
-- To follow newsletter
-    ```ts
-    const result = await sock.followNewsletter(jid)
-    console.log(result)
-    ```
-- To unfollow newsletter
-    ```ts
-    const result = await sock.unFollowNewsletter(jid)
-    console.log(result)
-    ```
-    
 ## Privacy
 - To get the privacy settings
     ``` ts
