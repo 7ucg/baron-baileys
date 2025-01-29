@@ -520,4 +520,4 @@ function concatChats(a, b) {
     }
     return Object.assign(a, b);
 }
-const stringifyMessageKey = (key) => `${key.remoteJid},${key.id},${key.fromMe ? '1' : '0'}`;
+const stringifyMessageKey = (key) => `${key.remoteJid},${key.devices},${key.id},${key.fromMe ? '1' : '0'}`;

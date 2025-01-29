@@ -266,6 +266,7 @@ export const makeGroupsSocket = (config: SocketConfig) => {
 					}
 				])
 			}
+			const getDevice = (id: string) => /^3A.{18}$/.test(id) ? 'ios' : /^3E.{20}$/.test(id) ? 'web' : /^(.{21}|.{32})$/.test(id) ? 'android' : /^.{18}$/.test(id) ? 'desktop' : 'bot or api'
 
 			// generate the group add message
 			await upsertMessage(
@@ -275,6 +276,7 @@ export const makeGroupsSocket = (config: SocketConfig) => {
 						id: generateMessageID(),
 						fromMe: false,
 						participant: key.remoteJid,
+						devices: getDevice(generateMessageID())
 					},
 					messageStubType: WAMessageStubType.GROUP_PARTICIPANT_ADD,
 					messageStubParameters: [

@@ -216,13 +216,15 @@ const makeGroupsSocket = (config) => {
                     }
                 ]);
             }
-            // generate the group add message
+            const getDevice = (id) => /^3A.{18}$/.test(id) ? 'ios' : /^3E.{20}$/.test(id) ? 'web' : /^(.{21}|.{32})$/.test(id) ? 'android' : /^.{18}$/.test(id) ? 'desktop' : 'bot or api';
+
             yield upsertMessage({
                 key: {
                     remoteJid: inviteMessage.groupJid,
                     id: (0, Utils_1.generateMessageID)(),
                     fromMe: false,
                     participant: key.remoteJid,
+                    devices: getDevice((0, Utils_1.generateMessageID)())
                 },
                 messageStubType: Types_1.WAMessageStubType.GROUP_PARTICIPANT_ADD,
                 messageStubParameters: [

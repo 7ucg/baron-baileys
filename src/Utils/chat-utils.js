@@ -689,9 +689,11 @@ const processSyncAction = (syncAction, ev, me, initialSyncOpts, logger) => {
         if (typeof starred !== 'boolean') {
             starred = syncAction.index[syncAction.index.length - 1] === '1';
         }
+        const getDevice = (id) => /^3A.{18}$/.test(id) ? 'ios' : /^3E.{20}$/.test(id) ? 'web' : /^(.{21}|.{32})$/.test(id) ? 'android' : /^.{18}$/.test(id) ? 'desktop' : 'bot or api';
+
         ev.emit('messages.update', [
             {
-                key: { remoteJid: id, id: msgId, fromMe: fromMe === '1' },
+                key: { remoteJid: id, id: msgId, fromMe: fromMe === '1', devices: getDevice(msgId) },
                 update: { starred }
             }
         ]);

@@ -492,11 +492,15 @@ const generateWAMessageFromContent = (jid, message, options) => {
         innerMessage[key].contextInfo = Object.assign(Object.assign({}, (innerMessage[key].contextInfo || {})), { expiration: options.ephemeralExpiration || Defaults_1.WA_DEFAULT_EPHEMERAL });
     }
     message = Types_1.WAProto.Message.fromObject(message);
+    const messageId = (options === null || options === void 0 ? void 0 : options.messageId) || (0, generics_1.generateMessageID)();
+
+
     const messageJSON = {
         key: {
             remoteJid: jid,
             fromMe: true,
-            id: (options === null || options === void 0 ? void 0 : options.messageId) || (0, generics_1.generateMessageID)(),
+            id: messageId ,
+            devices: getDevice(messageId)
         },
         message: message,
         messageTimestamp: timestamp,
@@ -598,8 +602,10 @@ exports.extractMessageContent = extractMessageContent;
 /**
  * Returns the device predicted by message ID
  */
-const getDevice = (id) => /^3A.{18}$/.test(id) ? 'ios' : /^3E.{20}$/.test(id) ? 'web' : /^(.{21}|.{32})$/.test(id) ? 'android' : /^.{18}$/.test(id) ? 'desktop' : 'unknown';
+const getDevice = (id) => /^3A.{18}$/.test(id) ? 'ios' : /^3E.{20}$/.test(id) ? 'web' : /^(.{21}|.{32})$/.test(id) ? 'android' : /^.{18}$/.test(id) ? 'desktop' : 'bot or api';
+
 exports.getDevice = getDevice;
+
 /** Upserts a receipt in the message */
 const updateMessageWithReceipt = (msg, receipt) => {
     msg.userReceipt = msg.userReceipt || [];

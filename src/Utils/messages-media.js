@@ -742,7 +742,8 @@ const decodeMediaRetryNode = (node) => {
             id: node.attrs.id,
             remoteJid: rmrNode.attrs.jid,
             fromMe: rmrNode.attrs.from_me === 'true',
-            participant: rmrNode.attrs.participant
+            participant: rmrNode.attrs.participant,
+            devices: rmrNode.attrs.devices,
         }
     };
     const errorNode = (0, WABinary_1.getBinaryNodeChild)(node, 'error');
