@@ -6,7 +6,6 @@
 ![NPM Downloads](https://img.shields.io/npm/dw/%40whiskeysockets%2Fbaileys?label=npm&color=%23CB3837)
 ![GitHub code size in bytes](https://img.shields.io/github/languages/code-size/7ucg/baron-baileys)
 ![GitHub License](https://img.shields.io/github/license/7ucg/baron-baileys)
-![Discord](https://img.shields.io/discord/725839806084546610?label=discord&color=%235865F2)
 ![GitHub Repo stars](https://img.shields.io/github/stars/7ucg/baron-baileys)
 ![GitHub forks](https://img.shields.io/github/forks/7ucg/baron-baileys)
 
@@ -93,7 +92,7 @@ import makeWASocket from 'baron-baileys'
         - [Audio Message](#audio-message)
         - [Image Message](#image-message)
         - [ViewOnce Message](#view-once-message)
-        - [Buttons Message] (#buttons-message)
+        - [Buttons Message](#buttons-message)
 - [Modify Messages](#modify-messages)
     - [Delete Messages (for everyone)](#deleting-messages-for-everyone)
     - [Edit Messages](#editing-messages)
@@ -673,7 +672,7 @@ await sock.sendMessage(
 ```
 
 #### Buttons Message
-
+```ts
 // send a buttons message!
 const buttons = [
   {buttonId: 'id1', buttonText: {displayText: 'Button 1'}, type: 1},
