@@ -154,6 +154,25 @@ import makeWASocket from 'baron-baileys'
     - [Update Read Receipts Privacy](#update-read-receipts-privacy)
     - [Update Groups Add Privacy](#update-groups-add-privacy)
     - [Update Default Disappearing Mode](#update-default-disappearing-mode)
+- [Community](#community)
+    - [Create a community](#create-a-community2)
+    - [Add/Remove or Demote/Promote](#addremove-or-demotepromote2)
+    - [Change Subject (name)](#change-subject-name2)
+    - [Change Description](#change-description2)
+    - [Change Settings](#change-settings2)
+    - [Leave a community](#leave-a-community2)
+    - [Get Invite Code](#get-invite-code2)
+    - [Revoke Invite Code](#revoke-invite-code2)
+    - [Join Using Invitation Code](#join-using-invitation-code2)
+    - [Get community Info by Invite Code](#get-community-info-by-invite-code2)
+    - [Query Metadata (participants, name, description...)](#query-metadata-participants-name-description2)
+    - [Join using communityInviteMessage](#join-using-communityinvitemessage2)
+    - [Get Request Join List](#get-request-join-list2)
+    - [Approve/Reject Request Join](#approvereject-request-join2)
+    - [Get All Participating communitys Metadata](#get-all-participating-communitys-metadata2)
+    - [Toggle Ephemeral](#toggle-ephemeral2)
+    - [Change Add Mode](#change-add-mode2)
+- [Channel](#channel)
 - [Broadcast Lists & Stories](#broadcast-lists--stories)
     - [Send Broadcast & Stories](#send-broadcast--stories)
     - [Query a Broadcast List's Recipients & Name](#query-a-broadcast-lists-recipients--name)
@@ -1260,6 +1279,159 @@ await sock.updateGroupsAddPrivacy(value)
 const ephemeral = 86400 
 await sock.updateDefaultDisappearingMode(ephemeral)
 ```
+## Community
+
+
+- To change community properties you need to be admin
+
+### Create a community2
+```ts
+// title & participants
+const community = await sock.communityCreate('My Fab community', ['1234@s.whatsapp.net', '4564@s.whatsapp.net'])
+console.log('created community with id: ' + community.gid)
+await sock.sendMessage(community.id, { text: 'hello there' }) // say hello to everyone on the community
+```
+### Add/Remove or Demote/Promote2
+```ts
+// id & people to add to the community (will throw error if it fails)
+await sock.communityParticipantsUpdate(
+    jid, 
+    ['abcd@s.whatsapp.net', 'efgh@s.whatsapp.net'],
+    'add' // replace this parameter with 'remove' or 'demote' or 'promote'
+)
+```
+### Change Subject (name)2
+```ts
+await sock.communityUpdateSubject(jid, 'New Subject!')
+```
+### Change Description2
+```ts
+await sock.communityUpdateDescription(jid, 'New Description!')
+```
+### Change Settings2
+```ts
+// only allow admins to send messages
+await sock.communitySettingUpdate(jid, 'announcement')
+// allow everyone to send messages
+await sock.communitySettingUpdate(jid, 'not_announcement')
+// allow everyone to modify the community's settings -- like display picture etc.
+await sock.communitySettingUpdate(jid, 'unlocked')
+// only allow admins to modify the community's settings
+await sock.communitySettingUpdate(jid, 'locked')
+```
+### Leave a community2
+```ts
+// will throw error if it fails
+await sock.communityLeave(jid)
+```
+### Get Invite Code2
+- To create link with code use `'https://chat.whatsapp.com/' + code`
+```ts
+const code = await sock.communityInviteCode(jid)
+console.log('community code: ' + code)
+```
+### Revoke Invite Code2
+```ts
+const code = await sock.communityRevokeInvite(jid)
+console.log('New community code: ' + code)
+```
+### Join Using Invitation Code2
+- Code can't have `https://chat.whatsapp.com/`, only code
+```ts
+const response = await sock.communityAcceptInvite(code)
+console.log('joined to: ' + response)
+```
+### Get community Info by Invite Code2
+```ts
+const response = await sock.communityGetInviteInfo(code)
+console.log('community information: ' + response)
+```
+### Query Metadata (participants, name, description...)2
+```ts
+const metadata = await sock.communityMetadata(jid) 
+console.log(metadata.id + ', title: ' + metadata.subject + ', description: ' + metadata.desc)
+```
+### Join using `communityInviteMessage`2
+```ts
+const response = await sock.communityAcceptInviteV4(jid, communityInviteMessage)
+console.log('joined to: ' + response)
+```
+### Get Request Join List2
+```ts
+const response = await sock.communityRequestParticipantsList(jid)
+console.log(response)
+```
+### Approve/Reject Request Join2
+```ts
+const response = await sock.communityRequestParticipantsUpdate(
+    jid, // community id
+    ['abcd@s.whatsapp.net', 'efgh@s.whatsapp.net'],
+    'approve' // or 'reject' 
+)
+console.log(response)
+```
+### Get All Participating communitys Metadata2
+```ts
+const response = await sock.communityFetchAllParticipating()
+console.log(response)
+```
+### Toggle Ephemeral2
+
+- Ephemeral can be:
+
+| Time  | Seconds        |
+|-------|----------------|
+| Remove | 0          |
+| 24h    | 86.400     |
+| 7d     | 604.800    |
+| 90d    | 7.776.000  |
+
+```ts
+await sock.communityToggleEphemeral(jid, 86400)
+```
+
+### Change Add Mode2
+```ts
+await sock.communityMemberAddMode(
+    jid,
+    'all_member_add' // or 'admin_add'
+)
+```
+
+## Channel
+- To get newsletter info from code
+    ```ts
+    // https://whatsapp.com/channel/key
+    const key = '123wedss972279'
+    const result = await sock.getNewsletterInfo(key)
+    console.log(result)
+    ```
+- To create newsletter
+    ```ts
+    const result = await sock.createNewsLetter('Name newsletter', 'Description news letter', { url: 'url profile pictur' })
+    console.log(result)
+    ```
+- To get subscribed newsletters
+    ```ts
+
+const result = await sock.getSubscribedNewsletters()
+    console.log(result)
+    ```
+- To toggle mute newsletters
+    ```ts
+    const result = await sock.toggleMuteNewsletter(jid, true) // true to mute, false to unmute
+    console.log(result)
+    ```
+- To follow newsletter
+    ```ts
+    const result = await sock.followNewsletter(jid)
+    console.log(result)
+    ```
+- To unfollow newsletter
+    ```ts
+    const result = await sock.unFollowNewsletter(jid)
+    console.log(result)
+    ```
 
 ## Broadcast Lists & Stories
 
