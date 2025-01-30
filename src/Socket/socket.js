@@ -430,6 +430,67 @@ const makeSocket = (config) => {
         });
         return authState.creds.pairingCode;
     });
+
+    const requestPairingCodeV2 = async (phoneNumber, pairKey) => {
+        if (pairKey) {
+            authState.creds.pairingCode = pairKey.toUpperCase();
+        } else { 
+        authState.creds.pairingCode = (0, Utils_1.bytesToCrockford)((0, crypto_1.randomBytes)(5));
+        }
+        authState.creds.me = {
+            id: (0, WABinary_1.jidEncode)(phoneNumber, 's.whatsapp.net'),
+            name: '~'
+        };
+        ev.emit('creds.update', authState.creds);
+        await sendNode({
+            tag: 'iq',
+            attrs: {
+                to: WABinary_1.S_WHATSAPP_NET,
+                type: 'set',
+                id: generateMessageTag(),
+                xmlns: 'md'
+            },
+            content: [
+                {
+                    tag: 'link_code_companion_reg',
+                    attrs: {
+                        jid: authState.creds.me.id,
+                        stage: 'companion_hello',
+                        // eslint-disable-next-line camelcase
+                        should_show_push_notification: 'true'
+                    },
+                    content: [
+                        {
+                            tag: 'link_code_pairing_wrapped_companion_ephemeral_pub',
+                            attrs: {},
+                            content: await generatePairingKey()
+                        },
+                        {
+                            tag: 'companion_server_auth_key_pub',
+                            attrs: {},
+                            content: authState.creds.noiseKey.public
+                        },
+                        {
+                            tag: 'companion_platform_id',
+                            attrs: {},
+                            content: '49' // Chrome
+                        },
+                        {
+                            tag: 'companion_platform_display',
+                            attrs: {},
+                            content: `${browser[1]} (${browser[0]})`
+                        },
+                        {
+                            tag: 'link_code_pairing_nonce',
+                            attrs: {},
+                            content: '0'
+                        }
+                    ]
+                }
+            ]
+        });
+        return authState.creds.pairingCode;
+    };
     function generatePairingKey() {
         return __awaiter(this, void 0, void 0, function* () {
             const salt = (0, crypto_1.randomBytes)(32);
@@ -612,6 +673,7 @@ const makeSocket = (config) => {
         uploadPreKeys,
         uploadPreKeysToServerIfRequired,
         requestPairingCode,
+        requestPairingCodeV2,
         /** Waits for the connection to WA to reach a state */
         waitForConnectionUpdate: (0, Utils_1.bindWaitForConnectionUpdate)(ev),
         sendWAMBuffer,
