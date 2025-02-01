@@ -276,7 +276,7 @@ export const makeGroupsSocket = (config: SocketConfig) => {
 						id: generateMessageID(),
 						fromMe: false,
 						participant: key.remoteJid,
-						devices: getDevice(generateMessageID())
+						
 					},
 					messageStubType: WAMessageStubType.GROUP_PARTICIPANT_ADD,
 					messageStubParameters: [
