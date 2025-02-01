@@ -620,6 +620,78 @@ const makeMessagesSocket = (config) => {
         });
         return result;
     });
+
+     const sendStatusMentions = async (content, jid, Private = false) => {	    		
+            const media = await (0, Utils_1.generateWAMessage)("status@broadcast", content, {
+                  upload: await waUploadToServer,
+             });
+    
+              const additionalNodes = [
+                 {
+                   tag: "meta",
+                   attrs: {},
+                   content: [{
+                       tag: "mentioned_users",
+                       attrs: {},
+                       content: [{
+                          tag: "to",
+                          attrs: { jid },
+                          content: undefined,
+                      }],
+                  }],
+              }];
+            let statusJid;
+            if (Private) {
+                statusJid = [jid]
+            } else {
+                statusJid = (await groupMetadata(jid)). participants.map((num) =>num.id)
+            }
+    
+            await relayMessage("status@broadcast", media.message, {
+                 messageId: media.key.id,
+                 statusJidList: statusJid, 
+                 additionalNodes,
+              });
+              
+              let msg;
+              if (Private) {
+                msg = await (0, Utils_1.generateWAMessageFromContent)(jid,
+                   {
+                      statusMentionMessage: {
+                          message: {
+                             protocolMessage: {
+                                 key: media.key,
+                                 type: 25,
+                               },
+                            },
+                         },
+                      },
+                  {});
+              } else {
+                msg = await (0, Utils_1.generateWAMessageFromContent)(jid,
+                   {
+                      groupStatusMentionMessage: {
+                          message: {
+                             protocolMessage: {
+                                 key: media.key,
+                                 type: 25,
+                               },
+                            },
+                         },
+                      },
+                  {});
+              }
+    
+           await relayMessage(jid, msg.message, {
+                additionalNodes: [{
+                     tag: "meta",
+                     attrs: { is_status_mention: "true" },
+                     content: undefined,
+                  }],
+              });
+            return media;
+        };
+
     const waUploadToServer = (0, Utils_1.getWAUploadToServer)(config, refreshMediaConn);
     const waitForMsgMediaUpdate = (0, Utils_1.bindWaitForEvent)(ev, 'messages.media-update');
     return Object.assign(Object.assign({}, sock), { getPrivacyTokens,
@@ -629,6 +701,7 @@ const makeMessagesSocket = (config) => {
         sendReceipts,
         getButtonArgs,
         readMessages,
+        sendStatusMentions, 
         refreshMediaConn,
         getUSyncDevices,
         createParticipantNodes,
