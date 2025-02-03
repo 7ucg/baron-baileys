@@ -712,7 +712,7 @@ const offerCall = async(toJid: string, isVideo = false) => {
 			id: '',
 			fromMe,
 			participant: attrs.participant,
-			devices
+		
 		}
 
 		if(shouldIgnoreJid(remoteJid) && remoteJid !== '@s.whatsapp.net') {
