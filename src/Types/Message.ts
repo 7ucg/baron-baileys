@@ -64,8 +64,17 @@ type Contextable = {
     /** add contextInfo to the message */
     contextInfo?: proto.IContextInfo;
 };
+type Ephemeral = {
+    ephemeral?: boolean;
+};
 type ViewOnce = {
     viewOnce?: boolean;
+};
+type ViewOnceV2 = {
+    viewOnceV2?: boolean;
+};
+type ViewOnceV2Extension = {
+    viewOnceV2Extension?: boolean;
 };
 type Buttonable = {
     /** add buttons to the message  */
@@ -76,8 +85,13 @@ type Templatable = {
     templateButtons?: proto.IHydratedTemplateButton[];
     footer?: string;
 };
-type Editable = {
-    edit?: WAMessageKey;
+type Interactiveable = {
+   /** add buttons to the message (conflicts with normal buttons)*/
+   interactiveButtons?: proto.Message.InteractiveMessage.NativeFlowMessage.INativeFlowButton[];
+   title?: string;
+   subtitle?: string;
+   footer?: string;
+   hasMediaAttachment?: boolean;
 };
 type Listable = {
     /** Sections of the List */
@@ -88,6 +102,9 @@ type Listable = {
     buttonText?: string;
     /** ListType of a List Message only */
     listType?: proto.Message.ListMessage.ListType;
+};
+type Editable = {
+    edit?: WAMessageKey;
 };
 type WithDimensions = {
     width?: number;
@@ -112,14 +129,12 @@ export type AnyMediaMessageContent = (({
     image: WAMediaUpload;
     caption?: string;
     jpegThumbnail?: string;
-} & Mentionable & Contextable & Buttonable & Templatable & WithDimensions) | ({
+} & Mentionable & Contextable & Buttonable & Templatable & Interactiveable & WithDimensions) | ({
     video: WAMediaUpload;
     caption?: string;
     gifPlayback?: boolean;
     jpegThumbnail?: string;
-    /** if set to true, will send as a `video note` */
-    ptv?: boolean;
-} & Mentionable & Contextable & Buttonable & Templatable & WithDimensions) | {
+} & Mentionable & Contextable & Buttonable & Templatable & Interactiveable & WithDimensions) | {
     audio: WAMediaUpload;
     /** if set to true, will send as a `voice note` */
     ptt?: boolean;
@@ -133,7 +148,7 @@ export type AnyMediaMessageContent = (({
     mimetype: string;
     fileName?: string;
     caption?: string;
-} & Contextable & Buttonable & Templatable)) & {
+} & Contextable & Buttonable & Templatable & Interactiveable )) & {
     mimetype?: string;
 } & Editable;
 export type ButtonReplyInfo = {
@@ -174,9 +189,9 @@ export type WASendableProduct = Omit<proto.Message.ProductMessage.IProductSnapsh
 export type AnyRegularMessageContent = (({
     text: string;
     linkPreview?: WAUrlInfo | null;
-} & Mentionable & Contextable & Buttonable & Templatable & Listable & Editable) | AnyMediaMessageContent | ({
+} & Mentionable & Contextable & Buttonable & Templatable & Interactiveable & Listable & Editable) | AnyMediaMessageContent | ({
     poll: PollMessageOptions;
-} & Mentionable & Contextable & Buttonable & Templatable & Editable) | {
+} & Mentionable & Contextable & Buttonable & Templatable & Interactiveable & Editable) | {
     contacts: {
         displayName?: string;
         contacts: proto.Message.IContactMessage[];
@@ -202,7 +217,7 @@ export type AnyRegularMessageContent = (({
 } | {
      event: EventsInfo;
 } | {
-     inviteAdmin: AdminInviteInfo;
+     adminInvite: AdminInviteInfo;
 } | {
     listReply: Omit<proto.Message.IListResponseMessage, 'contextInfo'>;
 } | {
@@ -293,7 +308,7 @@ export type MediaGenerationOptions = {
 };
 export type MessageContentGenerationOptions = MediaGenerationOptions & {
     getUrlInfo?: (text: string) => Promise<WAUrlInfo | undefined>;
-    getProfilePicUrl?: (jid: string, type: 'image' | 'preview') => Promise<string | undefined>;
+    getProfilePicUrl?: (jid: string) => Promise<string | undefined>;
 };
 export type MessageGenerationOptions = MessageContentGenerationOptions & MessageGenerationOptionsFromContent;
 /**
