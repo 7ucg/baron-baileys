@@ -283,10 +283,12 @@ const processMessage = (message_1, _a) => __awaiter(void 0, [message_1, _a], voi
         // we need to fetch the poll creation message to get the poll enc key
         const pollMsg = yield getMessage(creationMsgKey);
         if (pollMsg) {
+            console.log(pollMsg)
+            const actualPollMsg = pollMsg.viewOnceMessage?.message || pollMsg;
             const meIdNormalised = (0, WABinary_1.jidNormalizedUser)(meId);
             const pollCreatorJid = (0, generics_1.getKeyAuthor)(creationMsgKey, meIdNormalised);
             const voterJid = (0, generics_1.getKeyAuthor)(message.key, meIdNormalised);
-            const pollEncKey = (_l = pollMsg.messageContextInfo) === null || _l === void 0 ? void 0 : _l.messageSecret;
+            const pollEncKey = (_l = actualPollMsg.messageContextInfo) === null || _l === void 0 ? void 0 : _l.messageSecret;
             try {
                 const voteMsg = decryptPollVote(content.pollUpdateMessage.vote, {
                     pollEncKey,
