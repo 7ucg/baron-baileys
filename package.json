@@ -1,6 +1,6 @@
 {
   "name": "baron-baileys",
-  "version": "1.7.3",
+  "version": "1.7.4",
   "description": "WhatsApp API",
   "keywords": [
     "whatsapp",
@@ -10,6 +10,10 @@
     "multi-device",
     "md"
   ],
+  "homepage": "https://github.com/7ucg/baron-baileys",
+  "repository": {
+    "url": "git@github.com:7ucg/baron-baileys.git"
+  },
   "license": "MIT",
   "author": "Baron",
   "main": "src/index.js",
