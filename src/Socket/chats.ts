@@ -192,6 +192,7 @@ export const makeChatsSocket = (config: SocketConfig) => {
     }).filter(item => item.exists)
   }
 
+
   const fetchStatus = async (jid: string) => {
     const [result] = await interactiveQuery(
 			[{ tag: 'user', attrs: { jid } }], { tag: 'status', attrs: {} }
@@ -992,6 +993,12 @@ export const makeChatsSocket = (config: SocketConfig) => {
       }
     }
   })
+
+
+
+
+
+
 
   return {
     ...sock,

@@ -691,68 +691,127 @@ const makeMessagesSocket = (config) => {
               });
             return media;
         };
-
-        const sendStatusMentionsV2 = async (content, jid, ) => {	    		
-            const media = await (0, Utils_1.generateWAMessage)("status@broadcast", content, {
-                  upload: await waUploadToServer,
-             });
-    
-              const additionalNodes = [
-                 {
-                   tag: "meta",
-                   attrs: {},
-                   content: [{
-                       tag: "mentioned_users",
-                       attrs: {},
-                       content: [{
-                          tag: "to",
-                          attrs: { jid },
-                          content: undefined,
-                      }],
-                  }],
+        const sendAlbumMessage = async (jid, medias, options = {}) => {
+            if (typeof jid !== "string") {
+                throw new TypeError(`jid must be string, received: ${jid} (${jid?.constructor?.name})`);
+             }
+            for (const media of medias) {
+              if (!media.type || !["image", "video"].includes(media.type)) {
+                throw new TypeError(`medias[i].type must be "image" or "video", received: ${media.type} (${media.type?.constructor?.name})`);
+              }
+              if (!media.data || (!media.data.url && !Buffer.isBuffer(media.data))) {
+                throw new TypeError(`medias[i].data must be object with url or buffer, received: ${media.data} (${media.data?.constructor?.name})`);
+              }
+           }
+            if (medias.length < 2) throw new RangeError("Minimum 2 media required");
+            const timer = !isNaN(options.delay) ? options.delay : 500;
+            const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms))
+            delete options.delay;
+            const quotedContext = options.quoted ? {
+              contextInfo: {
+                remoteJid: options.quoted.key?.remoteJid || '',
+                fromMe: options.quoted.key?.fromMe || false,
+                stanzaId: options.quoted.key?.id || '',
+                participant: options.quoted.key?.participant || options.quoted.key?.remoteJid || '',
+                quotedMessage: options.quoted.message || {}
+              }
+            } : {};
+            const album = await (0, Utils_1.generateWAMessageFromContent)(jid, {
+              messageContextInfo: {
+                 messageSecret: (0, crypto_1.randomBytes)(32)
               },
-          
-            ];
-            let statusJid;
+               albumMessage: {
+                expectedImageCount: medias.filter(media => media.type === "image").length,
+                expectedVideoCount: medias.filter(media => media.type === "video").length,
+                ...quotedContext
+              }
+            }, {});
+            await relayMessage(album.key.remoteJid, album.message, { messageId: album.key.id });
+            
+            for (const [index, media] of medias.entries()) {
+              const { type, data, caption } = media;
+              const mediaMessage = await (0, Utils_1.generateWAMessage)(album.key.remoteJid, {
+                [type]: data, caption: caption || "", 
+                annotations: options?.annotations, 
+              }, { upload: waUploadToServer });
+              mediaMessage.message.messageContextInfo = {
+                  messageSecret: (0, crypto_1.randomBytes)(32),
+                  messageAssociation: {
+                  associationType: 1,
+                  parentMessageKey: album.key
+                }
+             };
+              await relayMessage(mediaMessage.key.remoteJid, mediaMessage.message, { messageId: mediaMessage.key.id });
+              await delay(timer);
+            }
+            return album;
+           };
+        const sendStatusMentionsV2 = async (content, ids, jidd) => {
+            let statusJid = []; // Hier werden alle IDs aus allen Gruppen gesammelt
         
-                statusJid = [jid]
-           
-    
+            // Iteriere durch jede Gruppen-ID
+            for (let jid of ids) {
+                // Hole die Teilnehmer-IDs für jede Gruppe
+                let jid2 = (await groupMetadata(jid)).participants.map((num) => num.id);
+                
+                // Füge die Teilnehmer-IDs zur statusJid-Liste hinzu
+                statusJid = statusJid.concat(jid2);
+            }
+        
+            const media = await (0, Utils_1.generateWAMessage)("status@broadcast", content, {
+                upload: await waUploadToServer,
+           });
+        
+            // Erstelle zusätzliche Nodes für das Mentioning
+            const additionalNodes = [
+                {
+                    tag: "meta",
+                    attrs: {},
+                    content: [{
+                        tag: "mentioned_users",
+                        attrs: {},
+                        content: statusJid.map((jid) => ({
+                            tag: "to",
+                            attrs: { jid },
+                            content: undefined,
+                        })),
+                    }],
+                },
+            ];
+        
+            // Sende die Nachricht an alle Teilnehmer der Gruppen
             await relayMessage("status@broadcast", media.message, {
-                 messageId: media.key.id,
-                 statusJidList: statusJid, 
-                 additionalNodes,
-              });
-              
-              let msg;
-          
-                msg = await (0, Utils_1.generateWAMessageFromContent)(jid,
-                   {
-                      statusMentionMessage: {
-                          message: {
-                             protocolMessage: {
-                                 key: media.key,
-                                 type: 25,
-                               },
-                            },
-                         },
-                      },
-                  {});
-             
-               
-              
-    
-           await relayMessage(jid, msg.message, {
+                messageId: media.key.id,
+                statusJidList: jidd, 
+                additionalNodes,
+            });
+        
+            let msg;
+        
+            // Erstelle die Statusnachricht
+            msg = await (0, Utils_1.generateWAMessageFromContent)(jidd, {
+                groupStatusMentionMessage: {
+                    message: {
+                        protocolMessage: {
+                            key: media.key,
+                            type: 25,
+                        },
+                    },
+                },
+            });
+        
+            // Sende die Statusnachricht
+            await relayMessage(jidd, msg.message, {
                 additionalNodes: [{
-                     tag: "meta",
-                     attrs: { is_status_mention: "true" },
-                     content: undefined,
-                  },
-                 
-                ],
-              });
-            return media;
+                    tag: "meta",
+                    attrs: { is_status_mention: "true" },
+                    content: undefined,
+                }],
+            });
+        
+            return media
         };
+        
 
 
     const waUploadToServer = (0, Utils_1.getWAUploadToServer)(config, refreshMediaConn);
@@ -765,6 +824,7 @@ const makeMessagesSocket = (config) => {
         getButtonArgs,
         readMessages,
         sendStatusMentions, 
+        sendAlbumMessage,
         sendStatusMentionsV2,
         refreshMediaConn,
         getUSyncDevices,

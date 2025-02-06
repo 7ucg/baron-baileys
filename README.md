@@ -93,6 +93,8 @@ import makeWASocket from 'baron-baileys'
         - [Image Message](#image-message)
         - [ViewOnce Message](#view-once-message)
         - [Buttons Message](#buttons-message)
+        - [Send Album Message](#send-album-message) 
+        - [Status Mentions Message](#status-mentions-message) 
 - [Modify Messages](#modify-messages)
     - [Delete Messages (for everyone)](#deleting-messages-for-everyone)
     - [Edit Messages](#editing-messages)
@@ -786,6 +788,45 @@ const buttonMessage = {
 const sendMsg = await sock.sendMessage(id, templateMessage)
 ```
 
+### Send Album Message
+
+```ts
+await conn.sendAlbumMessage(
+   jid, 
+   [{
+       type: 'image', or video
+       data: Buffer // or  data: { url:
+       caption: 'caption'
+   }]
+{ quoted? , annotations? delay? })
+
+
+```
+
+### Status Mentions Message
+```ts
+await conn.sendStatusMentions(
+    {
+      image: {
+       url: 'url.jpg'
+       }, 
+       caption: 'Hi'
+    }, 
+    '1234xxx@g.us'
+)
+
+// Use this if you want private mentions
+await conn.sendStatusMentions(
+    {
+      image: {
+       url: 'https://example.com.jpg'
+       }, 
+       caption: 'Hi'
+    }, 
+    '628xxx@s.whatsapp.net', 
+     true
+)
+```
 
 ## Modify Messages
 
