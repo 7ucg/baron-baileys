@@ -95,6 +95,8 @@ import makeWASocket from 'baron-baileys'
         - [Buttons Message](#buttons-message)
         - [Send Album Message](#send-album-message) 
         - [Status Mentions Message](#status-mentions-message) 
+        - [Shop Message](#shop-message) 
+        - [Collection Message](#collection-message) 
 - [Modify Messages](#modify-messages)
     - [Delete Messages (for everyone)](#deleting-messages-for-everyone)
     - [Edit Messages](#editing-messages)
@@ -827,6 +829,279 @@ await conn.sendStatusMentions(
      true
 )
 ```
+
+### Shop Message
+```ts
+await sock.sendMessage(
+    jid, 
+    {      
+       text: 'Body',
+       title: 'Title', 
+       subtitle: 'Subtitle', 
+       footer: 'Footer',
+       shop: {
+          surface: 1, // 2 | 3 | 4
+          id: 'https://example.com'
+       }, 
+       viewOnce: true
+    }
+);
+
+// Image
+await sock.sendMessage(
+    jid, 
+    { 
+       image: {
+          url: 'https://example.jpg'
+       },    
+       caption: 'Body',
+       title: 'Title', 
+       subtitle: 'Subtitle', 
+       footer: 'Footer',
+       shop: {
+          surface: 1, // 2 | 3 | 4
+          id: 'https://example.com'
+       }, 
+       hasMediaAttachment: false, // or true
+       viewOnce: true
+    }
+);
+
+// Video
+await sock.sendMessage(
+    jid, 
+    { 
+       video: {
+          url: 'https://example.jpg'
+       },    
+       caption: 'Body',
+       title: 'Title', 
+       subtitle: 'Subtitle', 
+       footer: 'Footer',
+       shop: {
+          surface: 1, // 2 | 3 | 4
+          id: 'https://example.com'
+       }, 
+       hasMediaAttachment: false, // or true
+       viewOnce: true
+    }
+);
+
+// Document
+await sock.sendMessage(
+    jid, 
+    {
+        document: { 
+          url: 'https://example.jpg' 
+       }, 
+       mimetype: 'image/jpeg', 
+       jpegThumbnail: await sock.resize('https://example.jpg', 320, 320), 
+       caption: 'Body',
+       title: 'Title',
+       subtitle: 'Subtitle', 
+       footer: 'Footer',
+       shop: {
+          surface: 1, // 2 | 3 | 4
+          id: 'https://example.com'
+       }, 
+       hasMediaAttachment: false, // or true, 
+       viewOnce: true
+    }
+);
+
+// Location
+await sock.sendMessage(
+    jid, 
+    { 
+       location: {
+         degressLatitude: -0, 
+         degressLongitude: 0,
+         name: 'Hi'
+       },    
+       caption: 'Body',
+       title: 'Title', 
+       subtitle: 'Subtitle', 
+       footer: 'Footer',
+       shop: {
+          surface: 1, // 2 | 3 | 4
+          id: 'https://example.com'
+       }, 
+       hasMediaAttachment: false, // or true
+       viewOnce: true
+    }
+);
+
+// Product
+await sock.sendMessage(
+    jid,
+    {
+        product: {
+            productImage: { 
+               url: 'https://example.jpg'
+            },
+            productId: '836xxx',
+            title: 'Title',
+            description: 'Description',
+            currencyCode: 'IDR',
+            priceAmount1000: '283xxx',
+            retailerId: 'Itsukichann',
+            url: 'https://example.com',
+            productImageCount: 1
+        },
+        businessOwnerJid: '628xxx@s.whatsapp.net',
+        caption: 'Body',
+        title: 'Title', 
+        subtitle: 'Subtitle', 
+        footer: 'Footer',
+        shop: {
+          surface: 1, // 2 | 3 | 4
+          id: 'https://example.com'
+       }, 
+        hasMediaAttachment: false, // or true
+        viewOnce: true
+    }
+);
+```
+### Collection Message
+```ts
+await sock.sendMessage(
+    jid, 
+    {      
+       text: 'Body',
+       title: 'Title', 
+       subtitle: 'Subtitle', 
+       footer: 'Footer',
+       collection: {
+          bizJid: 'jid', 
+          id: 'https://example.com', 
+          version: 1
+       }, 
+       viewOnce: true
+    }
+);
+
+// Image
+await sock.sendMessage(
+    jid, 
+    { 
+       image: {
+          url: 'https://example.jpg'
+       },    
+       caption: 'Body',
+       title: 'Title', 
+       subtitle: 'Subtitle', 
+       footer: 'Footer',
+       collection: {
+          bizJid: 'jid', 
+          id: 'https://example.com', 
+          version: 1
+       }, 
+       hasMediaAttachment: false, // or true
+       viewOnce: true
+    }
+);
+
+// Video
+await sock.sendMessage(
+    jid, 
+    { 
+       video: {
+          url: 'https://example.jpg'
+       },    
+       caption: 'Body',
+       title: 'Title', 
+       subtitle: 'Subtitle', 
+       footer: 'Footer',
+       collection: {
+          bizJid: 'jid', 
+          id: 'https://example.com', 
+          version: 1
+       }, 
+       hasMediaAttachment: false, // or true
+       viewOnce: true
+    }
+);
+
+// Document
+await sock.sendMessage(
+    jid, 
+    {
+        document: { 
+          url: 'https://example.jpg' 
+       }, 
+       mimetype: 'image/jpeg', 
+       jpegThumbnail: await sock.resize('https://example.jpg', 320, 320), 
+       caption: 'Body',
+       title: 'Title',
+       subtitle: 'Subtitle', 
+       footer: 'Footer',
+       collection: {
+          bizJid: 'jid', 
+          id: 'https://example.com', 
+          version: 1
+       }, 
+       hasMediaAttachment: false, // or true, 
+       viewOnce: true
+    }
+);
+
+// Location
+await sock.sendMessage(
+    jid, 
+    { 
+       location: {
+         degressLatitude: -0, 
+         degressLongitude: 0,
+         name: 'Hi'
+       },    
+       caption: 'Body',
+       title: 'Title', 
+       subtitle: 'Subtitle', 
+       footer: 'Footer',
+       collection: {
+          bizJid: 'jid', 
+          id: 'https://example.com', 
+          version: 1
+       }, 
+       hasMediaAttachment: false, // or true
+       viewOnce: true
+    }
+);
+
+// Product
+await sock.sendMessage(
+    jid,
+    {
+        product: {
+            productImage: { 
+               url: 'https://example.jpg'
+            },
+            productId: '836xxx',
+            title: 'Title',
+            description: 'Description',
+            currencyCode: 'IDR',
+            priceAmount1000: '283xxx',
+            retailerId: 'Itsukichann',
+            url: 'https://example.com',
+            productImageCount: 1
+        },
+        businessOwnerJid: '628xxx@s.whatsapp.net',
+        caption: 'Body',
+        title: 'Title', 
+        subtitle: 'Subtitle', 
+        footer: 'Footer',
+        collection: {
+          bizJid: 'jid', 
+          id: 'https://example.com', 
+          version: 1
+       }, 
+        hasMediaAttachment: false, // or true
+        viewOnce: true
+    }
+);
+```
+
+
 
 ## Modify Messages
 

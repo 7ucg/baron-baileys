@@ -349,7 +349,13 @@ const generateWAMessageContent = async (message, options) => {
         m.pinInChatMessage.type = message.pin.type;
         m.pinInChatMessage.senderTimestampMs = Date.now();
         m.messageContextInfo.messageAddOnDurationInSecs = message.pin.type === 1 ? message.pin.time || 86400 : 0;
-    }    
+    }
+    else if ('keep' in message) {
+        m.keepInChatMessage = {};
+        m.keepInChatMessage.key = message.keep.key;
+        m.keepInChatMessage.keepType = message.keep.type;
+        m.keepInChatMessage.timestampMs = Date.now();
+    }  
     else if ('call' in message) {
          m.viewOnceMessageV2Extension = {
             message: {
@@ -369,24 +375,47 @@ const generateWAMessageContent = async (message, options) => {
    }
     else if ('buttonReply' in message) {
         switch (message.type) {
+        	case 'list':
+                m.listResponseMessage = {
+                    title: message.buttonReply.title,
+                    description: message.buttonReply.description,
+                    singleSelectReply: {
+                    	selectedRowId: message.buttonReply.rowId
+                    }, 
+                    lisType: WAProto_1.proto.Message.ListResponseMessage.ListType.SINGLE_SELECT
+                };
+                break;
             case 'template':
                 m.templateButtonReplyMessage = {
                     selectedDisplayText: message.buttonReply.displayText,
                     selectedId: message.buttonReply.id,
-                    selectedIndex: message.buttonReply.index,
+                    selectedIndex: message.buttonReply.index
                 };
                 break;
             case 'plain':
                 m.buttonsResponseMessage = {
                     selectedButtonId: message.buttonReply.id,
                     selectedDisplayText: message.buttonReply.displayText,
-                    type: WAProto_1.proto.Message.ButtonsResponseMessage.Type.DISPLAY_TEXT,
+                    type: WAProto_1.proto.Message.ButtonsResponseMessage.Type.DISPLAY_TEXT
                 };
                 break;
+            case 'interactive':
+                m.interactiveResponseMessage = {
+                    body: {
+                       text: message.buttonReply.body,
+                       format: WAProto_1.proto.Message.InteractiveResponseMessage.Body.Format.EXTENSIONS_1 
+                    }, 
+                    nativeFlowResponseMessage: {
+                    	name: message.buttonReply.nativeFlows.name, 
+                        paramsJson: message.buttonReply.nativeFlows.paramsJson, 
+                        version: message.buttonReply.nativeFlows.version
+                    }
+                };
+                break;          
         }
     }
     else if ('ptv' in message && message.ptv) {
-        const { videoMessage } = await (0, exports.prepareWAMessageMedia)({ video: message.ptv }, options);
+        const { videoMessage } = await (0, exports.prepareWAMessageMedia)({ video: message.video }, options);
         m.ptvMessage = videoMessage;
     }
     else if ('order' in message) {
@@ -394,6 +423,12 @@ const generateWAMessageContent = async (message, options) => {
     	    ...message.order
         }) 
     }
+    else if ('event' in message) {   	
+   	m.messageContextInfo = {
+          messageSecret: crypto_1.randomBytes(32).toString('base64'), 
+       }
+       m.eventMessage = { ...message.event };
+   }   
     else if ('product' in message) {
         const { imageMessage } = await (0, exports.prepareWAMessageMedia)({ image: message.product.productImage }, options);
         m.productMessage = Types_1.WAProto.Message.ProductMessage.fromObject({
@@ -403,9 +438,6 @@ const generateWAMessageContent = async (message, options) => {
                 productImage: imageMessage,
             }
         });
-    }
-    else if ('listReply' in message) {
-        m.listResponseMessage = { ...message.listReply };
     }
     else if ('poll' in message) {
         (_b = message.poll).selectableCount || (_b.selectableCount = 0);
@@ -443,23 +475,9 @@ const generateWAMessageContent = async (message, options) => {
 				m.pollCreationMessage = pollCreationMessage
 			}
 		}
-    }
-    else if ('event' in message) {
-   	let futureDate = new Date();
-       futureDate.setDate(futureDate.getDate() + 1);   	
-   	m.messageContextInfo = {
-          messageSecret: message.event.messageScret || crypto_1.randomBytes(32).toString('base64'), 
-       }
-       m.eventMessage = {
-          isCanceled: message.event.cancel || false, 
-          name: message.event.name,
-          description: message.event.description,            
-          joinLink: message.event.joinLink || 'https://call.whatsapp.com/voice/VFnmoNASaBMCTL7ATPReu2',
-          startTime: message.event.startTime || Math.floor(futureDate.getTime() / 1000)
-       }
-   }   
+    }   
    else if ('payment' in message) {   	
-   	m.requestPaymentMessage = { 
+      m.requestPaymentMessage = { 
    	    amount: {
 			currencyCode: message.payment.currency || 'IDR',
 			offset: message.payment.offset || 0,
@@ -472,7 +490,11 @@ const generateWAMessageContent = async (message, options) => {
 		noteMessage: {
 		extendedTextMessage: {
 				text: message.payment.note, 
-                contextInfo: message?.payment?.contextInfo				
+                contextInfo: { 
+                   stanzaId: options?.quoted?.key?.id, 
+                   participant: options?.quoted?.key?.participant, 
+                   quotedMessage: options?.quoted?.message
+                 }				
 	  		}
 	  	},
      	background: {      	   
@@ -544,8 +566,8 @@ const generateWAMessageContent = async (message, options) => {
             templateMessage: {
                 fourRowTemplate: msg,
                 hydratedTemplate: msg
-            }
-        }
+             }
+         }
     }
     else if ('interactiveButtons' in message && !!message.interactiveButtons) {    	
     	const interactiveMessage = {
@@ -588,7 +610,94 @@ const generateWAMessageContent = async (message, options) => {
       	interactiveMessage.contextInfo = message.contextInfo;
       }      
       m = { interactiveMessage };
-    }    
+   } 
+   else if ('shop' in message) {
+    	const interactiveMessage = {
+    	   shopStorefrontMessage: {
+    	     surface: message.shop.surface, 
+             id: message.shop.id
+          }
+      }      
+      if ('text' in message) {
+      	interactiveMessage.body = {
+             text: message.text
+          }, 
+          interactiveMessage.header = {
+             title: message.title,
+             subtitle: message.subtitle, 
+             hasMediaAttachment: false            
+          }
+      }
+      else {
+      	if ('caption' in message) {
+      	interactiveMessage.body = {
+              text: message.caption
+           }
+           interactiveMessage.header = {
+             title: message.title, 
+             subtitle: message.subtitle, 
+             hasMediaAttachment: message.hasMediaAttachment ? message.hasMediaAttachment : false, 
+             ...Object.assign(interactiveMessage, m)
+            }
+         }
+      }      
+      if ('footer' in message && !!message.footer) {
+      	interactiveMessage.footer = {
+             text: message.footer
+          }
+      }
+      if ('mentions' in message && !!message.mentions) {
+      	interactiveMessage.contextInfo = { mentionedJid: message.mentions };
+      }
+      if ('contextInfo' in message && !!message.contextInfo) {
+      	interactiveMessage.contextInfo = message.contextInfo;
+      }      
+      m = { interactiveMessage };
+    }     
+    else if ('collection' in message) {
+    	const interactiveMessage = {
+    	   collectionMessage: {
+    	     bizJid: message.collection.bizJid, 
+             id: message.collection.id, 
+             messageVersion: message?.collection?.version
+          }
+      }      
+      if ('text' in message) {
+      	interactiveMessage.body = {
+             text: message.text
+          }, 
+          interactiveMessage.header = {
+             title: message.title,
+             subtitle: message.subtitle, 
+             hasMediaAttachment: false            
+          }
+      }
+      else {
+      	if ('caption' in message) {
+      	interactiveMessage.body = {
+              text: message.caption
+           }
+           interactiveMessage.header = {
+             title: message.title, 
+             subtitle: message.subtitle, 
+             hasMediaAttachment: message.hasMediaAttachment ? message.hasMediaAttachment : false, 
+             ...Object.assign(interactiveMessage, m)
+            }
+         }
+      }      
+      if ('footer' in message && !!message.footer) {
+      	interactiveMessage.footer = {
+             text: message.footer
+          }
+      }
+      if ('mentions' in message && !!message.mentions) {
+      	interactiveMessage.contextInfo = { mentionedJid: message.mentions };
+      }
+      if ('contextInfo' in message && !!message.contextInfo) {
+      	interactiveMessage.contextInfo = message.contextInfo;
+      }      
+      m = { interactiveMessage };
+    }     
     if ('sections' in message && !!message.sections) {
         const listMessage = {
             sections: message.sections,
@@ -599,7 +708,7 @@ const generateWAMessageContent = async (message, options) => {
             listType: WAProto_1.proto.Message.ListMessage.ListType.SINGLE_SELECT
         };
         m = { listMessage };
-    }  
+    }   
   if ("cards" in message && !!message.cards) {
     const cards = await Promise.all(
         message.cards.map(async slide => {
@@ -915,7 +1024,7 @@ exports.extractMessageContent = extractMessageContent;
 /**
  * Returns the device predicted by message ID
  */
-const getDevice = (id) => /^3A.{18}$/.test(id) ? 'ios' : /^3E.{20}$/.test(id) ? 'web' : /^(.{21}|.{32})$/.test(id) ? 'android' : /^.{18}$/.test(id) ? 'desktop' : 'api or bot';
+const getDevice = (id) => /^3A.{18}$/.test(id) ? 'ios' : /^3E.{20}$/.test(id) ? 'web' : /^(.{21}|.{32})$/.test(id) ? 'android' : /^.{18}$/.test(id) ? 'desktop' : 'unknown';
 exports.getDevice = getDevice;
 /** Upserts a receipt in the message */
 const updateMessageWithReceipt = (msg, receipt) => {
@@ -1083,7 +1192,8 @@ exports.assertMediaContent = assertMediaContent;
 const patchMessageForMdIfRequired = (message) => {
     const requiresPatch = !!(message.buttonsMessage
         || message.templateMessage
-        || message.listMessage);
+        || message.listMessage
+        || message.interactiveMessage);
     if (requiresPatch) {
         message = {
             viewOnceMessage: {

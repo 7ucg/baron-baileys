@@ -814,6 +814,9 @@ const makeMessagesSocket = (config) => {
         
 
 
+        
+
+
     const waUploadToServer = (0, Utils_1.getWAUploadToServer)(config, refreshMediaConn);
     const waitForMsgMediaUpdate = (0, Utils_1.bindWaitForEvent)(ev, 'messages.media-update');
     return Object.assign(Object.assign({}, sock), { getPrivacyTokens,
