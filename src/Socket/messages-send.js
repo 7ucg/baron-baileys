@@ -14,6 +14,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.makeMessagesSocket = void 0;
 const boom_1 = require("@hapi/boom");
+const crypto_1 = require("crypto");
 const node_cache_1 = __importDefault(require("node-cache"));
 const WAProto_1 = require("../../WAProto");
 const Defaults_1 = require("../Defaults");
@@ -703,7 +704,7 @@ const makeMessagesSocket = (config) => {
                 throw new TypeError(`medias[i].data must be object with url or buffer, received: ${media.data} (${media.data?.constructor?.name})`);
               }
            }
-            if (medias.length < 2) throw new RangeError("Minimum 2 media required");
+            if (medias.length < 1) throw new RangeError("Minimum 2 media required");
             const timer = !isNaN(options.delay) ? options.delay : 500;
             const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms))
             delete options.delay;
@@ -723,6 +724,8 @@ const makeMessagesSocket = (config) => {
                albumMessage: {
                 expectedImageCount: medias.filter(media => media.type === "image").length,
                 expectedVideoCount: medias.filter(media => media.type === "video").length,
+                // expectedImageCount: 999,
+                // expectedVideoCount: 9999,
                 ...quotedContext
               }
             }, {});

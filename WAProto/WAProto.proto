@@ -1,7 +1,7 @@
 syntax = "proto3";
 package proto;
 
-/// WhatsApp Version: 2.3000.1019893762
+/// WhatsApp Version: 2.3000.1020216127
 
 message ADVDeviceIdentity {
     optional uint32 rawId = 1;
@@ -45,6 +45,11 @@ message ADVSignedKeyIndexList {
 message AIRichResponseMessage {
     optional AIRichResponseMessageType messageType = 1;
     repeated AIRichResponseSubMessage submessages = 2;
+    optional AIRichResponseAbstractData abstractData = 3;
+    message AIRichResponseAbstractData {
+        optional bytes data = 1;
+    }
+    
     message AIRichResponseCodeMetadata {
         optional string codeLanguage = 1;
         repeated AIRichResponseCodeBlock codeBlocks = 2;
@@ -98,6 +103,19 @@ message AIRichResponseMessage {
         }
     }
     
+    message AIRichResponseLatexMetadata {
+        optional string text = 1;
+        repeated AIRichResponseLatexExpression expressions = 2;
+        message AIRichResponseLatexExpression {
+            optional string latexExpression = 1;
+            optional string url = 2;
+            optional double width = 3;
+            optional double height = 4;
+            optional double fontHeight = 5;
+        }
+        
+    }
+    
     enum AIRichResponseMessageType {
         AI_RICH_RESPONSE_TYPE_UNKNOWN = 0;
         AI_RICH_RESPONSE_TYPE_STANDARD = 1;
@@ -110,6 +128,7 @@ message AIRichResponseMessage {
         optional AIRichResponseMessage.AIRichResponseCodeMetadata codeMetadata = 5;
         optional AIRichResponseMessage.AIRichResponseTableMetadata tableMetadata = 6;
         optional AIRichResponseMessage.AIRichResponseDynamicMetadata dynamicMetadata = 7;
+        optional AIRichResponseMessage.AIRichResponseLatexMetadata latexMetadata = 8;
     }
     
     enum AIRichResponseSubMessageType {
@@ -227,6 +246,7 @@ message BotCapabilityMetadata {
         RICH_RESPONSE_SUB_HEADING = 21;
         RICH_RESPONSE_GRID_IMAGE = 22;
         AI_STUDIO_UGC_MEMORY = 23;
+        RICH_RESPONSE_LATEX = 24;
     }
 }
 
@@ -826,6 +846,7 @@ message ContextInfo {
     optional ForwardedAIBotMessageInfo forwardedAiBotMessageInfo = 56;
     optional StatusAttributionType statusAttributionType = 57;
     optional UrlTrackingMap urlTrackingMap = 58;
+    optional PairedMediaType pairedMediaType = 59;
     message AdReplyInfo {
         optional string advertiserName = 1;
         optional MediaType mediaType = 2;
@@ -912,6 +933,13 @@ message ContextInfo {
         }
     }
     
+    enum PairedMediaType {
+        NOT_PAIRED_MEDIA = 0;
+        SD_VIDEO_PARENT = 1;
+        HD_VIDEO_CHILD = 2;
+        SD_IMAGE_PARENT = 3;
+        HD_IMAGE_CHILD = 4;
+    }
     enum StatusAttributionType {
         NONE = 0;
         RESHARED_FROM_MENTION = 1;
@@ -983,11 +1011,16 @@ message Conversation {
 
 message DeviceCapabilities {
     optional ChatLockSupportLevel chatLockSupportLevel = 1;
+    optional LIDMigration lidMigration = 2;
     enum ChatLockSupportLevel {
         NONE = 0;
         MINIMAL = 1;
         FULL = 2;
     }
+    message LIDMigration {
+        optional uint64 chatDbMigrationTimestamp = 1;
+    }
+    
 }
 
 message DeviceConsistencyCodeMessage {
@@ -2795,6 +2828,8 @@ message MessageAssociation {
         MEDIA_POLL = 7;
         STATUS_ADD_YOURS = 8;
         STATUS_NOTIFICATION = 9;
+        HD_IMAGE_DUAL_UPLOAD = 10;
+        STICKER_ANNOTATION = 11;
     }
 }
 
@@ -3985,6 +4020,7 @@ message WebMessageInfo {
     optional bool isSupportAiMessage = 70;
     repeated string statusMentionSources = 71;
     repeated Citation supportAiCitations = 72;
+    optional string botTargetId = 73;
     enum BizPrivacyStatus {
         E2EE = 0;
         FB = 2;
@@ -4213,6 +4249,7 @@ message WebMessageInfo {
         STATUS_MENTION = 210;
         USER_CONTROLS_SYSTEM_MESSAGE = 211;
         SUPPORT_SYSTEM_MESSAGE = 212;
+        CHANGE_LID = 213;
     }
 }
 
