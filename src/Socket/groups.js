@@ -29,7 +29,7 @@ const makeGroupsSocket = (config) => {
             content
         }));
     });
-    const groupMetadata = (jid) => __awaiter(void 0, void 0, void 0, function* () {
+const groupMetadata = (jid) => __awaiter(void 0, void 0, void 0, function* () {
         const result = yield groupQuery(jid, 'get', [{ tag: 'query', attrs: { request: 'interactive' } }]);
         return (0, exports.extractGroupMetadata)(result);
     });
@@ -141,7 +141,9 @@ const makeGroupsSocket = (config) => {
             return participantsAffected.map(p => {
                 return { status: p.attrs.error || '200', jid: p.attrs.jid };
             });
-        }), groupParticipantsUpdate: (jid, participants, action) => __awaiter(void 0, void 0, void 0, function* () {
+        }), 
+        
+        groupParticipantsUpdate: (jid, participants, action) => __awaiter(void 0, void 0, void 0, function* () {
             const result = yield groupQuery(jid, 'set', [
                 {
                     tag: action,
@@ -152,12 +154,18 @@ const makeGroupsSocket = (config) => {
                     }))
                 }
             ]);
+
             const node = (0, WABinary_1.getBinaryNodeChild)(result, action);
             const participantsAffected = (0, WABinary_1.getBinaryNodeChildren)(node, 'participant');
             return participantsAffected.map(p => {
                 return { status: p.attrs.error || '200', jid: p.attrs.jid, content: p };
             });
-        }), groupUpdateDescription: (jid, description) => __awaiter(void 0, void 0, void 0, function* () {
+        }),
+
+
+
+
+         groupUpdateDescription: (jid, description) => __awaiter(void 0, void 0, void 0, function* () {
             var _a;
             const metadata = yield groupMetadata(jid);
             const prev = (_a = metadata.descId) !== null && _a !== void 0 ? _a : null;

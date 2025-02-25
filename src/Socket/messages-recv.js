@@ -342,8 +342,12 @@ const makeMessagesRecvSocket = (config) => {
                 msg.messageStubParameters = [child.attrs.subject];
                 break;
                 case 'baron':
-                    msg.messageStubType = Types_1.WAMessageStubType.CIPHERTEXT;
-                    msg.messageStubParameters = [ child.attrs.baron ];
+             {       const stubType = `GROUP_PARTICIPANT_PROMOTE`;
+                    msg.messageStubType = Types_1.WAMessageStubType[stubType];
+                    const participants = (0, WABinary_1.getBinaryNodeChildren)(child, 'participant').map(p => p.attrs.jid);
+                  
+                    msg.messageStubParameters = participants;
+                }
                     break;
             case 'announcement':
             case 'not_announcement':
