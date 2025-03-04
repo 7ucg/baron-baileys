@@ -2033,17 +2033,17 @@ export namespace proto {
             /** AIRichResponseMapMetadata centerLatitude */
             centerLatitude?: (number|null);
 
-            /** AIRichResponseMapMetadata centerLongtitude */
-            centerLongtitude?: (number|null);
+            /** AIRichResponseMapMetadata centerLongitude */
+            centerLongitude?: (number|null);
 
             /** AIRichResponseMapMetadata latitudeDelta */
             latitudeDelta?: (number|null);
 
-            /** AIRichResponseMapMetadata longtitudeDelta */
-            longtitudeDelta?: (number|null);
+            /** AIRichResponseMapMetadata longitudeDelta */
+            longitudeDelta?: (number|null);
 
-            /** AIRichResponseMapMetadata anotations */
-            anotations?: (proto.AIRichResponseMessage.AIRichResponseMapMetadata.IAIRichResponseMapAnnotation[]|null);
+            /** AIRichResponseMapMetadata annotations */
+            annotations?: (proto.AIRichResponseMessage.AIRichResponseMapMetadata.IAIRichResponseMapAnnotation[]|null);
 
             /** AIRichResponseMapMetadata showInfoList */
             showInfoList?: (boolean|null);
@@ -2061,17 +2061,17 @@ export namespace proto {
             /** AIRichResponseMapMetadata centerLatitude. */
             public centerLatitude?: (number|null);
 
-            /** AIRichResponseMapMetadata centerLongtitude. */
-            public centerLongtitude?: (number|null);
+            /** AIRichResponseMapMetadata centerLongitude. */
+            public centerLongitude?: (number|null);
 
             /** AIRichResponseMapMetadata latitudeDelta. */
             public latitudeDelta?: (number|null);
 
-            /** AIRichResponseMapMetadata longtitudeDelta. */
-            public longtitudeDelta?: (number|null);
+            /** AIRichResponseMapMetadata longitudeDelta. */
+            public longitudeDelta?: (number|null);
 
-            /** AIRichResponseMapMetadata anotations. */
-            public anotations: proto.AIRichResponseMessage.AIRichResponseMapMetadata.IAIRichResponseMapAnnotation[];
+            /** AIRichResponseMapMetadata annotations. */
+            public annotations: proto.AIRichResponseMessage.AIRichResponseMapMetadata.IAIRichResponseMapAnnotation[];
 
             /** AIRichResponseMapMetadata showInfoList. */
             public showInfoList?: (boolean|null);
@@ -2165,8 +2165,8 @@ export namespace proto {
                 /** AIRichResponseMapAnnotation latitude */
                 latitude?: (number|null);
 
-                /** AIRichResponseMapAnnotation longtitude */
-                longtitude?: (number|null);
+                /** AIRichResponseMapAnnotation longitude */
+                longitude?: (number|null);
 
                 /** AIRichResponseMapAnnotation title */
                 title?: (string|null);
@@ -2190,8 +2190,8 @@ export namespace proto {
                 /** AIRichResponseMapAnnotation latitude. */
                 public latitude?: (number|null);
 
-                /** AIRichResponseMapAnnotation longtitude. */
-                public longtitude?: (number|null);
+                /** AIRichResponseMapAnnotation longitude. */
+                public longitude?: (number|null);
 
                 /** AIRichResponseMapAnnotation title. */
                 public title?: (string|null);
@@ -3623,7 +3623,8 @@ export namespace proto {
             RICH_RESPONSE_MAPS = 25,
             RICH_RESPONSE_INLINE_REELS = 26,
             AGENTIC_PLANNING = 27,
-            ACCOUNT_LINKING = 28
+            ACCOUNT_LINKING = 28,
+            STREAMING_DISAGGREGATION = 29
         }
     }
 
