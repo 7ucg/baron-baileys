@@ -1,7 +1,7 @@
 syntax = "proto3";
 package proto;
 
-/// WhatsApp Version: 2.3000.1020570323
+/// WhatsApp Version: 2.3000.1020685987
 
 message ADVDeviceIdentity {
     optional uint32 rawId = 1;
@@ -372,6 +372,7 @@ message BotMetadata {
     optional BotRenderingMetadata renderingMetadata = 16;
     optional BotMetricsMetadata botMetricsMetadata = 17;
     optional BotLinkedAccountsMetadata botLinkedAccountsMetadata = 18;
+    optional BotSourcesMetadata richResponseSourcesMetadata = 19;
 }
 
 enum BotMetricsEntryPoint {
@@ -392,12 +393,23 @@ enum BotMetricsEntryPoint {
     FORWARD = 15;
     APP_SHORTCUT = 16;
     FF_FAMILY = 17;
+    AI_TAB = 18;
+    AI_HOME = 19;
+    AI_DEEPLINK_IMMERSIVE = 20;
+    AI_DEEPLINK = 21;
 }
 message BotMetricsMetadata {
     optional string destinationId = 1;
     optional BotMetricsEntryPoint destinationEntryPoint = 2;
+    optional BotMetricsThreadEntryPoint threadOrigin = 3;
 }
 
+enum BotMetricsThreadEntryPoint {
+    AI_TAB_THREAD = 1;
+    AI_HOME_THREAD = 2;
+    AI_DEEPLINK_IMMERSIVE_THREAD = 3;
+    AI_DEEPLINK_THREAD = 4;
+}
 message BotModelMetadata {
     optional ModelType modelType = 1;
     optional PremiumModelStatus premiumModelStatus = 2;
@@ -524,6 +536,25 @@ enum BotSessionSource {
     EMU_FLASH_FOLLOWUP = 5;
     VOICE = 6;
 }
+message BotSourcesMetadata {
+    repeated BotSourceItem sources = 1;
+    message BotSourceItem {
+        optional SourceProvider provider = 1;
+        optional string thumbnailCdnUrl = 2;
+        optional string sourceProviderUrl = 3;
+        optional string sourceQuery = 4;
+        optional string faviconCdnUrl = 5;
+        optional uint32 citationNumber = 6;
+        enum SourceProvider {
+            UNKNOWN = 0;
+            BING = 1;
+            GOOGLE = 2;
+            SUPPORT = 3;
+        }
+    }
+    
+}
+
 message BotSuggestedPromptMetadata {
     repeated string suggestedPrompts = 1;
     optional uint32 selectedPromptIndex = 2;
@@ -1081,6 +1112,8 @@ message Conversation {
     optional PrivacySystemMessage systemMessageToInsert = 47;
     optional bool capiCreatedGroup = 48;
     optional string accountLid = 49;
+    optional bool limitSharing = 50;
+    optional int64 limitSharingSettingTimestamp = 51;
     enum EndOfHistoryTransferType {
         COMPLETE_BUT_MORE_MESSAGES_REMAIN_ON_PRIMARY = 0;
         COMPLETE_AND_NO_MORE_MESSAGE_REMAIN_ON_PRIMARY = 1;
@@ -2923,6 +2956,7 @@ message MessageAssociation {
         STATUS_NOTIFICATION = 9;
         HD_IMAGE_DUAL_UPLOAD = 10;
         STICKER_ANNOTATION = 11;
+        MOTION_PHOTO = 12;
     }
 }
 
