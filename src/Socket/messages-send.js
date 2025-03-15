@@ -561,6 +561,9 @@ const makeMessagesSocket = (config) => {
         else if (message.interactiveResponseMessage) {
             return 'native_flow_response';
         }
+        else if (message.groupInviteMessage) {
+            return 'url';
+        }
     };
     const getButtonType = (message) => {
         if (message.buttonsMessage) {
@@ -906,6 +909,9 @@ const makeMessagesSocket = (config) => {
                     }), mediaCache: config.mediaCache, options: config.options }, options));
                 const isDeleteMsg = 'delete' in content && !!content.delete;
                 const isEditMsg = 'edit' in content && !!content.edit;
+                const isPinMsg = 'pin' in content && !!content.pin;
+                const isKeepMsg = 'keep' in content && content.keep;
+                const isPollMessage = 'poll' in content && !!content.poll;
                 const isAiMsg = 'ai' in content && !!content.ai;
                 const additionalAttributes = {};
                 const additionalNodes = [];
@@ -922,6 +928,23 @@ const makeMessagesSocket = (config) => {
                 else if (isEditMsg) {
                     additionalAttributes.edit = (0, WABinary_1.isJidNewsLetter)(jid) ? '3' : '1';
                 }
+                else if (isPinMsg) {
+                        additionalAttributes.edit = '2';
+                        // required for keep message
+                    }
+                    else if (isKeepMsg) {
+                        additionalAttributes.edit = '6';
+                        // required for polling message
+                    }
+                    else if (isPollMessage) {
+                        additionalNodes.push({
+                            tag: 'meta',
+                            attrs: {
+                                polltype: 'creation'
+                            },
+                        });
+                        // required to display AI icon on message
+                    }
                 else if (isAiMsg) {
                     additionalNodes.push({
                         attrs: {

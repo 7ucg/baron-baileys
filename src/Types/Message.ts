@@ -22,6 +22,7 @@ export type WAMessageKey = proto.IMessageKey & {
 export type WATextMessage = proto.Message.IExtendedTextMessage;
 export type WAContextInfo = proto.IContextInfo;
 export type WALocationMessage = proto.Message.ILocationMessage;
+export type WAOrderMessage = proto.Message.IOrderMessage;
 export type WAGenericMediaMessage = proto.Message.IVideoMessage | proto.Message.IImageMessage | proto.Message.IAudioMessage | proto.Message.IDocumentMessage | proto.Message.IStickerMessage;
 export import WAMessageStubType = proto.WebMessageInfo.StubType;
 export import WAMessageStatus = proto.WebMessageInfo.Status;
@@ -118,6 +119,10 @@ export type PollMessageOptions = {
     messageSecret?: Uint8Array;
     toAnnouncementGroup?: boolean;
 };
+export type PollResultOptions = {
+    name: string; 
+    values: string[];
+}
 type SharePhoneNumber = {
     sharePhoneNumber: boolean;
 };
@@ -183,6 +188,28 @@ export type AdminInviteInfo = {
     expiration: number;
     jpegThumbnail: string;
 };
+export type PinInfo = {
+    key: WAMessageKey; 
+    type: number;
+    time?: number;
+};
+export type KeepInfo = {
+    key: WAMessageKey;
+    type: number;
+};
+export type PaymentInfo = {
+    note: string;
+    currency?: string;
+    offset?: number;
+    amount?: number;
+    expiry?: number;
+    from?: string;
+    image?: {
+        placeholderArgb: fixed32;
+        textArgb: fixed32;
+        subtextArgb: fixed32;
+    }
+};
 export type WASendableProduct = Omit<proto.Message.ProductMessage.IProductSnapshot, 'productImage'> & {
     productImage: WAMediaUpload;
 };
@@ -220,6 +247,16 @@ export type AnyRegularMessageContent = (({
      adminInvite: AdminInviteInfo;
 } | {
     listReply: Omit<proto.Message.IListResponseMessage, 'contextInfo'>;
+    payment: PaymentInfo;
+} | {
+    paymentInvite: {
+       type: number; 
+       expiry: number;
+    };
+} | {
+    pollResult: PollResultOptions;
+} | {
+    order: WAOrderMessage;
 } | {
     product: WASendableProduct;
     businessOwnerJid?: string;

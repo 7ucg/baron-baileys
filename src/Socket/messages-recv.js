@@ -320,6 +320,12 @@ const makeMessagesRecvSocket = (config) => {
                     }
                 };
                 break;
+                case 'modify':
+                    const oldNumber = (0, WABinary_1.getBinaryNodeChildren)(child, 'participant').map(p => p.attrs.jid);
+                    msg.messageStubParameters = oldNumber || [];
+                    msg.messageStubType = Types_1.WAMessageStubType.GROUP_PARTICIPANT_CHANGE_NUMBER;
+                    break;
+              
             case 'promote':
             case 'demote':
             case 'remove':
@@ -377,8 +383,63 @@ const makeMessagesRecvSocket = (config) => {
                     msg.messageStubParameters = [approvalMode.attrs.state];
                 }
                 break;
+                case 'created_membership_requests':
+                    msg.messageStubType = Types_1.WAMessageStubType.GROUP_MEMBERSHIP_JOIN_APPROVAL_REQUEST_NON_ADMIN_ADD;
+                    msg.messageStubParameters = [participantJid, 'created', child.attrs.request_method];
+                    break;
+                case 'revoked_membership_requests':
+                    const isDenied = (0, WABinary_1.areJidsSameUser)(participantJid, participant);
+                    msg.messageStubType = Types_1.WAMessageStubType.GROUP_MEMBERSHIP_JOIN_APPROVAL_REQUEST_NON_ADMIN_ADD;
+                    msg.messageStubParameters = [participantJid, isDenied ? 'revoked' : 'rejected'];
+                    break;
         }
     };
+
+    const handleNewsletterNotification = (id, node) => {
+        const messages = (0, WABinary_1.getBinaryNodeChild)(node, 'messages');
+        const message = (0, WABinary_1.getBinaryNodeChild)(messages, 'message');
+        const server_id = message.attrs.server_id;
+        const reactionsList = (0, WABinary_1.getBinaryNodeChild)(message, 'reactions');
+        const viewsList = (0, WABinary_1.getBinaryNodeChildren)(message, 'views_count');
+        if (reactionsList) {
+            const reactions = (0, WABinary_1.getBinaryNodeChildren)(reactionsList, 'reaction');
+            if (reactions.length === 0) {
+                ev.emit('newsletter.reaction', { id, server_id, reaction: { removed: true } });
+            }
+            reactions.forEach(item => {
+                var _a, _b;
+                ev.emit('newsletter.reaction', { id, server_id, reaction: { code: (_a = item.attrs) === null || _a === void 0 ? void 0 : _a.code, count: +((_b = item.attrs) === null || _b === void 0 ? void 0 : _b.count) } });
+            });
+        }
+        if (viewsList.length) {
+            viewsList.forEach(item => {
+                ev.emit('newsletter.view', { id, server_id, count: +item.attrs.count });
+            });
+        }
+    };
+    const handleMexNewsletterNotification = (id, node) => {
+        var _a;
+        const operation = node === null || node === void 0 ? void 0 : node.attrs.op_name;
+        const content = JSON.parse((_a = node === null || node === void 0 ? void 0 : node.content) === null || _a === void 0 ? void 0 : _a.toString());
+        let contentPath;
+        if (operation === Types_1.MexOperations.PROMOTE || operation === Types_1.MexOperations.DEMOTE) {
+            let action;
+            if (operation === Types_1.MexOperations.PROMOTE) {
+                action = 'promote';
+                contentPath = content.data[Types_1.XWAPaths.PROMOTE];
+            }
+            if (operation === Types_1.MexOperations.DEMOTE) {
+                action = 'demote';
+                contentPath = content.data[Types_1.XWAPaths.DEMOTE];
+            }
+            ev.emit('newsletter-participants.update', { id, author: contentPath.actor.pn, user: contentPath.user.pn, new_role: contentPath.user_new_role, action });
+        }
+        if (operation === Types_1.MexOperations.UPDATE) {
+            contentPath = content.data[Types_1.XWAPaths.METADATA_UPDATE];
+            ev.emit('newsletter-settings.update', { id, update: contentPath.thread_metadata.settings });
+        }
+    };
+
     const processNotification = (node) => __awaiter(void 0, void 0, void 0, function* () {
         var _a, _b, _c;
         const result = {};
@@ -410,7 +471,10 @@ const makeMessagesRecvSocket = (config) => {
                 yield handleEncryptNotification(node);
                 break;
             case 'newsletter':
-                // TO DO
+                          handleNewsletterNotification(node.attrs.from, child);
+                break;
+                case 'mex':
+                handleMexNewsletterNotification(node.attrs.from, child);
                 break;
             case 'devices':
                 const devices = (0, WABinary_1.getBinaryNodeChildren)(child, 'device');
