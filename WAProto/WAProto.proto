@@ -1,7 +1,7 @@
 syntax = "proto3";
 package proto;
 
-/// WhatsApp Version: 2.3000.1020685987
+/// WhatsApp Version: 2.3000.1020903593
 
 message ADVDeviceIdentity {
     optional uint32 rawId = 1;
@@ -193,6 +193,13 @@ message AIRichResponseMessage {
         
     }
     
+}
+
+message Account {
+    optional string lid = 1;
+    optional string username = 2;
+    optional string countryCode = 3;
+    optional bool isUsernameDeleted = 4;
 }
 
 message ActionLink {
@@ -461,6 +468,14 @@ message BotProgressIndicatorMetadata {
         optional PlanningStepStatus status = 4;
         optional bool isReasoning = 5;
         optional bool isEnhancedSearch = 6;
+        repeated BotPlanningStepSectionMetadata sections = 7;
+        message BotPlanningSearchSourceMetadata {
+            optional string title = 1;
+            optional BotProgressIndicatorMetadata.BotPlanningStepMetadata.BotSearchSourceProvider provider = 2;
+            optional string sourceUrl = 3;
+            optional string favIconUrl = 4;
+        }
+        
         message BotPlanningSearchSourcesMetadata {
             optional string sourceTitle = 1;
             optional BotPlanningSearchSourceProvider provider = 2;
@@ -473,6 +488,18 @@ message BotProgressIndicatorMetadata {
             }
         }
         
+        message BotPlanningStepSectionMetadata {
+            optional string sectionTitle = 1;
+            optional string sectionBody = 2;
+            repeated BotProgressIndicatorMetadata.BotPlanningStepMetadata.BotPlanningSearchSourceMetadata sourcesMetadata = 3;
+        }
+        
+        enum BotSearchSourceProvider {
+            UNKNOWN_PROVIDER = 0;
+            OTHER = 1;
+            GOOGLE = 2;
+            BING = 3;
+        }
         enum PlanningStepStatus {
             UNKNOWN = 0;
             PLANNED = 1;
@@ -712,6 +739,7 @@ message ClientPayload {
     optional int32 memClass = 37;
     optional InteropData interopData = 38;
     optional TrafficAnonymization trafficAnonymization = 40;
+    optional bool lidDbMigrated = 41;
     enum ConnectReason {
         PUSH = 0;
         USER_ACTIVATED = 1;
@@ -1010,6 +1038,7 @@ message ContextInfo {
         optional string ctaPayload = 20;
         optional bool disableNudge = 21;
         optional string originalImageUrl = 22;
+        optional bool wtwaAdFormat = 23;
         enum MediaType {
             NONE = 0;
             IMAGE = 1;
@@ -1378,6 +1407,7 @@ message HistorySync {
     repeated PhoneNumberToLIDMapping phoneNumberToLidMappings = 15;
     optional string companionMetaNonce = 16;
     optional bytes shareableChatIdentifierEncryptionKey = 17;
+    repeated Account accounts = 18;
     enum BotAIWaitListState {
         IN_WAITLIST = 0;
         AI_AVAILABLE = 1;
@@ -1438,11 +1468,17 @@ message InteractiveAnnotation {
     repeated Point polygonVertices = 1;
     optional bool shouldSkipConfirmation = 4;
     optional EmbeddedContent embeddedContent = 5;
+    optional StatusLinkType statusLinkType = 8;
     oneof action {
         Location location = 2;
         ContextInfo.ForwardedNewsletterMessageInfo newsletter = 3;
         bool embeddedAction = 6;
         TapLinkAction tapAction = 7;
+    }
+    enum StatusLinkType {
+        RASTERIZED_LINK_PREVIEW = 1;
+        RASTERIZED_LINK_TRUNCATED = 2;
+        RASTERIZED_LINK_FULL_URL = 3;
     }
 }
 
@@ -1623,6 +1659,7 @@ message Message {
     optional FutureProofMessage groupStatusMessage = 96;
     optional AIRichResponseMessage richResponseMessage = 97;
     optional StatusNotificationMessage statusNotificationMessage = 98;
+    optional FutureProofMessage limitSharingMessage = 99;
     message AlbumMessage {
         optional uint32 expectedImageCount = 2;
         optional uint32 expectedVideoCount = 3;
@@ -1971,6 +2008,7 @@ message Message {
         optional uint32 videoHeight = 31;
         optional uint32 videoWidth = 32;
         optional Message.MMSThumbnailMetadata faviconMMSMetadata = 33;
+        optional LinkPreviewMetadata linkPreviewMetadata = 34;
         enum FontType {
             SYSTEM = 0;
             SYSTEM_TEXT = 1;
@@ -1987,6 +2025,10 @@ message Message {
             SUB = 2;
             DEFAULT_SUB = 3;
         }
+        message LinkPreviewMetadata {
+            optional Message.PaymentLinkMetadata paymentLinkMetadata = 1;
+        }
+        
         enum PreviewType {
             NONE = 0;
             VIDEO = 1;
@@ -2419,6 +2461,23 @@ message Message {
             NOVI = 2;
             UPI = 3;
         }
+    }
+    
+    message PaymentLinkMetadata {
+        optional PaymentLinkButton button = 1;
+        optional PaymentLinkHeader header = 2;
+        message PaymentLinkButton {
+            required string displayText = 1;
+        }
+        
+        message PaymentLinkHeader {
+            required PaymentLinkHeaderType headerType = 1;
+            enum PaymentLinkHeaderType {
+                LINK_PREVIEW = 0;
+                ORDER = 1;
+            }
+        }
+        
     }
     
     message PeerDataOperationRequestMessage {
@@ -2906,7 +2965,6 @@ message Message {
         repeated InteractiveAnnotation annotations = 25;
         optional string accessibilityLabel = 26;
         repeated ProcessedVideo processedVideos = 27;
-        optional uint32 externalShareFullVideoDurationInSeconds = 28;
         enum Attribution {
             NONE = 0;
             GIPHY = 1;
@@ -2957,6 +3015,8 @@ message MessageAssociation {
         HD_IMAGE_DUAL_UPLOAD = 10;
         STICKER_ANNOTATION = 11;
         MOTION_PHOTO = 12;
+        STATUS_LINK_ACTION = 13;
+        VIEW_ALL_REPLIES = 14;
     }
 }
 

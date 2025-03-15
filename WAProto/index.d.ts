@@ -2653,6 +2653,121 @@ export namespace proto {
         }
     }
 
+    /** Properties of an Account. */
+    interface IAccount {
+
+        /** Account lid */
+        lid?: (string|null);
+
+        /** Account username */
+        username?: (string|null);
+
+        /** Account countryCode */
+        countryCode?: (string|null);
+
+        /** Account isUsernameDeleted */
+        isUsernameDeleted?: (boolean|null);
+    }
+
+    /** Represents an Account. */
+    class Account implements IAccount {
+
+        /**
+         * Constructs a new Account.
+         * @param [properties] Properties to set
+         */
+        constructor(properties?: proto.IAccount);
+
+        /** Account lid. */
+        public lid?: (string|null);
+
+        /** Account username. */
+        public username?: (string|null);
+
+        /** Account countryCode. */
+        public countryCode?: (string|null);
+
+        /** Account isUsernameDeleted. */
+        public isUsernameDeleted?: (boolean|null);
+
+        /**
+         * Creates a new Account instance using the specified properties.
+         * @param [properties] Properties to set
+         * @returns Account instance
+         */
+        public static create(properties?: proto.IAccount): proto.Account;
+
+        /**
+         * Encodes the specified Account message. Does not implicitly {@link proto.Account.verify|verify} messages.
+         * @param message Account message or plain object to encode
+         * @param [writer] Writer to encode to
+         * @returns Writer
+         */
+        public static encode(message: proto.IAccount, writer?: $protobuf.Writer): $protobuf.Writer;
+
+        /**
+         * Encodes the specified Account message, length delimited. Does not implicitly {@link proto.Account.verify|verify} messages.
+         * @param message Account message or plain object to encode
+         * @param [writer] Writer to encode to
+         * @returns Writer
+         */
+        public static encodeDelimited(message: proto.IAccount, writer?: $protobuf.Writer): $protobuf.Writer;
+
+        /**
+         * Decodes an Account message from the specified reader or buffer.
+         * @param reader Reader or buffer to decode from
+         * @param [length] Message length if known beforehand
+         * @returns Account
+         * @throws {Error} If the payload is not a reader or valid buffer
+         * @throws {$protobuf.util.ProtocolError} If required fields are missing
+         */
+        public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): proto.Account;
+
+        /**
+         * Decodes an Account message from the specified reader or buffer, length delimited.
+         * @param reader Reader or buffer to decode from
+         * @returns Account
+         * @throws {Error} If the payload is not a reader or valid buffer
+         * @throws {$protobuf.util.ProtocolError} If required fields are missing
+         */
+        public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): proto.Account;
+
+        /**
+         * Verifies an Account message.
+         * @param message Plain object to verify
+         * @returns `null` if valid, otherwise the reason why it is not
+         */
+        public static verify(message: { [k: string]: any }): (string|null);
+
+        /**
+         * Creates an Account message from a plain object. Also converts values to their respective internal types.
+         * @param object Plain object
+         * @returns Account
+         */
+        public static fromObject(object: { [k: string]: any }): proto.Account;
+
+        /**
+         * Creates a plain object from an Account message. Also converts values to other types if specified.
+         * @param message Account
+         * @param [options] Conversion options
+         * @returns Plain object
+         */
+        public static toObject(message: proto.Account, options?: $protobuf.IConversionOptions): { [k: string]: any };
+
+        /**
+         * Converts this Account to JSON.
+         * @returns JSON object
+         */
+        public toJSON(): { [k: string]: any };
+
+        /**
+         * Gets the default type url for Account
+         * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+         * @returns The default type url
+         */
+        public static getTypeUrl(typeUrlPrefix?: string): string;
+    }
+
     /** Properties of an ActionLink. */
     interface IActionLink {
 
@@ -5170,6 +5285,9 @@ export namespace proto {
 
             /** BotPlanningStepMetadata isEnhancedSearch */
             isEnhancedSearch?: (boolean|null);
+
+            /** BotPlanningStepMetadata sections */
+            sections?: (proto.BotProgressIndicatorMetadata.BotPlanningStepMetadata.IBotPlanningStepSectionMetadata[]|null);
         }
 
         /** Represents a BotPlanningStepMetadata. */
@@ -5198,6 +5316,9 @@ export namespace proto {
 
             /** BotPlanningStepMetadata isEnhancedSearch. */
             public isEnhancedSearch?: (boolean|null);
+
+            /** BotPlanningStepMetadata sections. */
+            public sections: proto.BotProgressIndicatorMetadata.BotPlanningStepMetadata.IBotPlanningStepSectionMetadata[];
 
             /**
              * Creates a new BotPlanningStepMetadata instance using the specified properties.
@@ -5278,6 +5399,121 @@ export namespace proto {
         }
 
         namespace BotPlanningStepMetadata {
+
+            /** Properties of a BotPlanningSearchSourceMetadata. */
+            interface IBotPlanningSearchSourceMetadata {
+
+                /** BotPlanningSearchSourceMetadata title */
+                title?: (string|null);
+
+                /** BotPlanningSearchSourceMetadata provider */
+                provider?: (proto.BotProgressIndicatorMetadata.BotPlanningStepMetadata.BotSearchSourceProvider|null);
+
+                /** BotPlanningSearchSourceMetadata sourceUrl */
+                sourceUrl?: (string|null);
+
+                /** BotPlanningSearchSourceMetadata favIconUrl */
+                favIconUrl?: (string|null);
+            }
+
+            /** Represents a BotPlanningSearchSourceMetadata. */
+            class BotPlanningSearchSourceMetadata implements IBotPlanningSearchSourceMetadata {
+
+                /**
+                 * Constructs a new BotPlanningSearchSourceMetadata.
+                 * @param [properties] Properties to set
+                 */
+                constructor(properties?: proto.BotProgressIndicatorMetadata.BotPlanningStepMetadata.IBotPlanningSearchSourceMetadata);
+
+                /** BotPlanningSearchSourceMetadata title. */
+                public title?: (string|null);
+
+                /** BotPlanningSearchSourceMetadata provider. */
+                public provider?: (proto.BotProgressIndicatorMetadata.BotPlanningStepMetadata.BotSearchSourceProvider|null);
+
+                /** BotPlanningSearchSourceMetadata sourceUrl. */
+                public sourceUrl?: (string|null);
+
+                /** BotPlanningSearchSourceMetadata favIconUrl. */
+                public favIconUrl?: (string|null);
+
+                /**
+                 * Creates a new BotPlanningSearchSourceMetadata instance using the specified properties.
+                 * @param [properties] Properties to set
+                 * @returns BotPlanningSearchSourceMetadata instance
+                 */
+                public static create(properties?: proto.BotProgressIndicatorMetadata.BotPlanningStepMetadata.IBotPlanningSearchSourceMetadata): proto.BotProgressIndicatorMetadata.BotPlanningStepMetadata.BotPlanningSearchSourceMetadata;
+
+                /**
+                 * Encodes the specified BotPlanningSearchSourceMetadata message. Does not implicitly {@link proto.BotProgressIndicatorMetadata.BotPlanningStepMetadata.BotPlanningSearchSourceMetadata.verify|verify} messages.
+                 * @param message BotPlanningSearchSourceMetadata message or plain object to encode
+                 * @param [writer] Writer to encode to
+                 * @returns Writer
+                 */
+                public static encode(message: proto.BotProgressIndicatorMetadata.BotPlanningStepMetadata.IBotPlanningSearchSourceMetadata, writer?: $protobuf.Writer): $protobuf.Writer;
+
+                /**
+                 * Encodes the specified BotPlanningSearchSourceMetadata message, length delimited. Does not implicitly {@link proto.BotProgressIndicatorMetadata.BotPlanningStepMetadata.BotPlanningSearchSourceMetadata.verify|verify} messages.
+                 * @param message BotPlanningSearchSourceMetadata message or plain object to encode
+                 * @param [writer] Writer to encode to
+                 * @returns Writer
+                 */
+                public static encodeDelimited(message: proto.BotProgressIndicatorMetadata.BotPlanningStepMetadata.IBotPlanningSearchSourceMetadata, writer?: $protobuf.Writer): $protobuf.Writer;
+
+                /**
+                 * Decodes a BotPlanningSearchSourceMetadata message from the specified reader or buffer.
+                 * @param reader Reader or buffer to decode from
+                 * @param [length] Message length if known beforehand
+                 * @returns BotPlanningSearchSourceMetadata
+                 * @throws {Error} If the payload is not a reader or valid buffer
+                 * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                 */
+                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): proto.BotProgressIndicatorMetadata.BotPlanningStepMetadata.BotPlanningSearchSourceMetadata;
+
+                /**
+                 * Decodes a BotPlanningSearchSourceMetadata message from the specified reader or buffer, length delimited.
+                 * @param reader Reader or buffer to decode from
+                 * @returns BotPlanningSearchSourceMetadata
+                 * @throws {Error} If the payload is not a reader or valid buffer
+                 * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                 */
+                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): proto.BotProgressIndicatorMetadata.BotPlanningStepMetadata.BotPlanningSearchSourceMetadata;
+
+                /**
+                 * Verifies a BotPlanningSearchSourceMetadata message.
+                 * @param message Plain object to verify
+                 * @returns `null` if valid, otherwise the reason why it is not
+                 */
+                public static verify(message: { [k: string]: any }): (string|null);
+
+                /**
+                 * Creates a BotPlanningSearchSourceMetadata message from a plain object. Also converts values to their respective internal types.
+                 * @param object Plain object
+                 * @returns BotPlanningSearchSourceMetadata
+                 */
+                public static fromObject(object: { [k: string]: any }): proto.BotProgressIndicatorMetadata.BotPlanningStepMetadata.BotPlanningSearchSourceMetadata;
+
+                /**
+                 * Creates a plain object from a BotPlanningSearchSourceMetadata message. Also converts values to other types if specified.
+                 * @param message BotPlanningSearchSourceMetadata
+                 * @param [options] Conversion options
+                 * @returns Plain object
+                 */
+                public static toObject(message: proto.BotProgressIndicatorMetadata.BotPlanningStepMetadata.BotPlanningSearchSourceMetadata, options?: $protobuf.IConversionOptions): { [k: string]: any };
+
+                /**
+                 * Converts this BotPlanningSearchSourceMetadata to JSON.
+                 * @returns JSON object
+                 */
+                public toJSON(): { [k: string]: any };
+
+                /**
+                 * Gets the default type url for BotPlanningSearchSourceMetadata
+                 * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+                 * @returns The default type url
+                 */
+                public static getTypeUrl(typeUrlPrefix?: string): string;
+            }
 
             /** Properties of a BotPlanningSearchSourcesMetadata. */
             interface IBotPlanningSearchSourcesMetadata {
@@ -5397,6 +5633,123 @@ export namespace proto {
                     GOOGLE = 2,
                     BING = 3
                 }
+            }
+
+            /** Properties of a BotPlanningStepSectionMetadata. */
+            interface IBotPlanningStepSectionMetadata {
+
+                /** BotPlanningStepSectionMetadata sectionTitle */
+                sectionTitle?: (string|null);
+
+                /** BotPlanningStepSectionMetadata sectionBody */
+                sectionBody?: (string|null);
+
+                /** BotPlanningStepSectionMetadata sourcesMetadata */
+                sourcesMetadata?: (proto.BotProgressIndicatorMetadata.BotPlanningStepMetadata.IBotPlanningSearchSourceMetadata[]|null);
+            }
+
+            /** Represents a BotPlanningStepSectionMetadata. */
+            class BotPlanningStepSectionMetadata implements IBotPlanningStepSectionMetadata {
+
+                /**
+                 * Constructs a new BotPlanningStepSectionMetadata.
+                 * @param [properties] Properties to set
+                 */
+                constructor(properties?: proto.BotProgressIndicatorMetadata.BotPlanningStepMetadata.IBotPlanningStepSectionMetadata);
+
+                /** BotPlanningStepSectionMetadata sectionTitle. */
+                public sectionTitle?: (string|null);
+
+                /** BotPlanningStepSectionMetadata sectionBody. */
+                public sectionBody?: (string|null);
+
+                /** BotPlanningStepSectionMetadata sourcesMetadata. */
+                public sourcesMetadata: proto.BotProgressIndicatorMetadata.BotPlanningStepMetadata.IBotPlanningSearchSourceMetadata[];
+
+                /**
+                 * Creates a new BotPlanningStepSectionMetadata instance using the specified properties.
+                 * @param [properties] Properties to set
+                 * @returns BotPlanningStepSectionMetadata instance
+                 */
+                public static create(properties?: proto.BotProgressIndicatorMetadata.BotPlanningStepMetadata.IBotPlanningStepSectionMetadata): proto.BotProgressIndicatorMetadata.BotPlanningStepMetadata.BotPlanningStepSectionMetadata;
+
+                /**
+                 * Encodes the specified BotPlanningStepSectionMetadata message. Does not implicitly {@link proto.BotProgressIndicatorMetadata.BotPlanningStepMetadata.BotPlanningStepSectionMetadata.verify|verify} messages.
+                 * @param message BotPlanningStepSectionMetadata message or plain object to encode
+                 * @param [writer] Writer to encode to
+                 * @returns Writer
+                 */
+                public static encode(message: proto.BotProgressIndicatorMetadata.BotPlanningStepMetadata.IBotPlanningStepSectionMetadata, writer?: $protobuf.Writer): $protobuf.Writer;
+
+                /**
+                 * Encodes the specified BotPlanningStepSectionMetadata message, length delimited. Does not implicitly {@link proto.BotProgressIndicatorMetadata.BotPlanningStepMetadata.BotPlanningStepSectionMetadata.verify|verify} messages.
+                 * @param message BotPlanningStepSectionMetadata message or plain object to encode
+                 * @param [writer] Writer to encode to
+                 * @returns Writer
+                 */
+                public static encodeDelimited(message: proto.BotProgressIndicatorMetadata.BotPlanningStepMetadata.IBotPlanningStepSectionMetadata, writer?: $protobuf.Writer): $protobuf.Writer;
+
+                /**
+                 * Decodes a BotPlanningStepSectionMetadata message from the specified reader or buffer.
+                 * @param reader Reader or buffer to decode from
+                 * @param [length] Message length if known beforehand
+                 * @returns BotPlanningStepSectionMetadata
+                 * @throws {Error} If the payload is not a reader or valid buffer
+                 * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                 */
+                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): proto.BotProgressIndicatorMetadata.BotPlanningStepMetadata.BotPlanningStepSectionMetadata;
+
+                /**
+                 * Decodes a BotPlanningStepSectionMetadata message from the specified reader or buffer, length delimited.
+                 * @param reader Reader or buffer to decode from
+                 * @returns BotPlanningStepSectionMetadata
+                 * @throws {Error} If the payload is not a reader or valid buffer
+                 * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                 */
+                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): proto.BotProgressIndicatorMetadata.BotPlanningStepMetadata.BotPlanningStepSectionMetadata;
+
+                /**
+                 * Verifies a BotPlanningStepSectionMetadata message.
+                 * @param message Plain object to verify
+                 * @returns `null` if valid, otherwise the reason why it is not
+                 */
+                public static verify(message: { [k: string]: any }): (string|null);
+
+                /**
+                 * Creates a BotPlanningStepSectionMetadata message from a plain object. Also converts values to their respective internal types.
+                 * @param object Plain object
+                 * @returns BotPlanningStepSectionMetadata
+                 */
+                public static fromObject(object: { [k: string]: any }): proto.BotProgressIndicatorMetadata.BotPlanningStepMetadata.BotPlanningStepSectionMetadata;
+
+                /**
+                 * Creates a plain object from a BotPlanningStepSectionMetadata message. Also converts values to other types if specified.
+                 * @param message BotPlanningStepSectionMetadata
+                 * @param [options] Conversion options
+                 * @returns Plain object
+                 */
+                public static toObject(message: proto.BotProgressIndicatorMetadata.BotPlanningStepMetadata.BotPlanningStepSectionMetadata, options?: $protobuf.IConversionOptions): { [k: string]: any };
+
+                /**
+                 * Converts this BotPlanningStepSectionMetadata to JSON.
+                 * @returns JSON object
+                 */
+                public toJSON(): { [k: string]: any };
+
+                /**
+                 * Gets the default type url for BotPlanningStepSectionMetadata
+                 * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+                 * @returns The default type url
+                 */
+                public static getTypeUrl(typeUrlPrefix?: string): string;
+            }
+
+            /** BotSearchSourceProvider enum. */
+            enum BotSearchSourceProvider {
+                UNKNOWN_PROVIDER = 0,
+                OTHER = 1,
+                GOOGLE = 2,
+                BING = 3
             }
 
             /** PlanningStepStatus enum. */
@@ -7989,6 +8342,9 @@ export namespace proto {
 
         /** ClientPayload trafficAnonymization */
         trafficAnonymization?: (proto.ClientPayload.TrafficAnonymization|null);
+
+        /** ClientPayload lidDbMigrated */
+        lidDbMigrated?: (boolean|null);
     }
 
     /** Represents a ClientPayload. */
@@ -8083,6 +8439,9 @@ export namespace proto {
 
         /** ClientPayload trafficAnonymization. */
         public trafficAnonymization?: (proto.ClientPayload.TrafficAnonymization|null);
+
+        /** ClientPayload lidDbMigrated. */
+        public lidDbMigrated?: (boolean|null);
 
         /**
          * Creates a new ClientPayload instance using the specified properties.
@@ -10525,6 +10884,9 @@ export namespace proto {
 
             /** ExternalAdReplyInfo originalImageUrl */
             originalImageUrl?: (string|null);
+
+            /** ExternalAdReplyInfo wtwaAdFormat */
+            wtwaAdFormat?: (boolean|null);
         }
 
         /** Represents an ExternalAdReplyInfo. */
@@ -10601,6 +10963,9 @@ export namespace proto {
 
             /** ExternalAdReplyInfo originalImageUrl. */
             public originalImageUrl?: (string|null);
+
+            /** ExternalAdReplyInfo wtwaAdFormat. */
+            public wtwaAdFormat?: (boolean|null);
 
             /**
              * Creates a new ExternalAdReplyInfo instance using the specified properties.
@@ -14648,6 +15013,9 @@ export namespace proto {
 
         /** HistorySync shareableChatIdentifierEncryptionKey */
         shareableChatIdentifierEncryptionKey?: (Uint8Array|null);
+
+        /** HistorySync accounts */
+        accounts?: (proto.IAccount[]|null);
     }
 
     /** Represents a HistorySync. */
@@ -14706,6 +15074,9 @@ export namespace proto {
 
         /** HistorySync shareableChatIdentifierEncryptionKey. */
         public shareableChatIdentifierEncryptionKey?: (Uint8Array|null);
+
+        /** HistorySync accounts. */
+        public accounts: proto.IAccount[];
 
         /**
          * Creates a new HistorySync instance using the specified properties.
@@ -15475,6 +15846,9 @@ export namespace proto {
         /** InteractiveAnnotation embeddedContent */
         embeddedContent?: (proto.IEmbeddedContent|null);
 
+        /** InteractiveAnnotation statusLinkType */
+        statusLinkType?: (proto.InteractiveAnnotation.StatusLinkType|null);
+
         /** InteractiveAnnotation location */
         location?: (proto.ILocation|null);
 
@@ -15505,6 +15879,9 @@ export namespace proto {
 
         /** InteractiveAnnotation embeddedContent. */
         public embeddedContent?: (proto.IEmbeddedContent|null);
+
+        /** InteractiveAnnotation statusLinkType. */
+        public statusLinkType?: (proto.InteractiveAnnotation.StatusLinkType|null);
 
         /** InteractiveAnnotation location. */
         public location?: (proto.ILocation|null);
@@ -15597,6 +15974,16 @@ export namespace proto {
          * @returns The default type url
          */
         public static getTypeUrl(typeUrlPrefix?: string): string;
+    }
+
+    namespace InteractiveAnnotation {
+
+        /** StatusLinkType enum. */
+        enum StatusLinkType {
+            RASTERIZED_LINK_PREVIEW = 1,
+            RASTERIZED_LINK_TRUNCATED = 2,
+            RASTERIZED_LINK_FULL_URL = 3
+        }
     }
 
     /** Properties of a KeepInChat. */
@@ -17274,6 +17661,9 @@ export namespace proto {
 
         /** Message statusNotificationMessage */
         statusNotificationMessage?: (proto.Message.IStatusNotificationMessage|null);
+
+        /** Message limitSharingMessage */
+        limitSharingMessage?: (proto.Message.IFutureProofMessage|null);
     }
 
     /** Represents a Message. */
@@ -17530,6 +17920,9 @@ export namespace proto {
 
         /** Message statusNotificationMessage. */
         public statusNotificationMessage?: (proto.Message.IStatusNotificationMessage|null);
+
+        /** Message limitSharingMessage. */
+        public limitSharingMessage?: (proto.Message.IFutureProofMessage|null);
 
         /**
          * Creates a new Message instance using the specified properties.
@@ -21651,6 +22044,9 @@ export namespace proto {
 
             /** ExtendedTextMessage faviconMMSMetadata */
             faviconMMSMetadata?: (proto.Message.IMMSThumbnailMetadata|null);
+
+            /** ExtendedTextMessage linkPreviewMetadata */
+            linkPreviewMetadata?: (proto.Message.ExtendedTextMessage.ILinkPreviewMetadata|null);
         }
 
         /** Represents an ExtendedTextMessage. */
@@ -21739,6 +22135,9 @@ export namespace proto {
 
             /** ExtendedTextMessage faviconMMSMetadata. */
             public faviconMMSMetadata?: (proto.Message.IMMSThumbnailMetadata|null);
+
+            /** ExtendedTextMessage linkPreviewMetadata. */
+            public linkPreviewMetadata?: (proto.Message.ExtendedTextMessage.ILinkPreviewMetadata|null);
 
             /**
              * Creates a new ExtendedTextMessage instance using the specified properties.
@@ -21838,6 +22237,103 @@ export namespace proto {
                 PARENT = 1,
                 SUB = 2,
                 DEFAULT_SUB = 3
+            }
+
+            /** Properties of a LinkPreviewMetadata. */
+            interface ILinkPreviewMetadata {
+
+                /** LinkPreviewMetadata paymentLinkMetadata */
+                paymentLinkMetadata?: (proto.Message.IPaymentLinkMetadata|null);
+            }
+
+            /** Represents a LinkPreviewMetadata. */
+            class LinkPreviewMetadata implements ILinkPreviewMetadata {
+
+                /**
+                 * Constructs a new LinkPreviewMetadata.
+                 * @param [properties] Properties to set
+                 */
+                constructor(properties?: proto.Message.ExtendedTextMessage.ILinkPreviewMetadata);
+
+                /** LinkPreviewMetadata paymentLinkMetadata. */
+                public paymentLinkMetadata?: (proto.Message.IPaymentLinkMetadata|null);
+
+                /**
+                 * Creates a new LinkPreviewMetadata instance using the specified properties.
+                 * @param [properties] Properties to set
+                 * @returns LinkPreviewMetadata instance
+                 */
+                public static create(properties?: proto.Message.ExtendedTextMessage.ILinkPreviewMetadata): proto.Message.ExtendedTextMessage.LinkPreviewMetadata;
+
+                /**
+                 * Encodes the specified LinkPreviewMetadata message. Does not implicitly {@link proto.Message.ExtendedTextMessage.LinkPreviewMetadata.verify|verify} messages.
+                 * @param message LinkPreviewMetadata message or plain object to encode
+                 * @param [writer] Writer to encode to
+                 * @returns Writer
+                 */
+                public static encode(message: proto.Message.ExtendedTextMessage.ILinkPreviewMetadata, writer?: $protobuf.Writer): $protobuf.Writer;
+
+                /**
+                 * Encodes the specified LinkPreviewMetadata message, length delimited. Does not implicitly {@link proto.Message.ExtendedTextMessage.LinkPreviewMetadata.verify|verify} messages.
+                 * @param message LinkPreviewMetadata message or plain object to encode
+                 * @param [writer] Writer to encode to
+                 * @returns Writer
+                 */
+                public static encodeDelimited(message: proto.Message.ExtendedTextMessage.ILinkPreviewMetadata, writer?: $protobuf.Writer): $protobuf.Writer;
+
+                /**
+                 * Decodes a LinkPreviewMetadata message from the specified reader or buffer.
+                 * @param reader Reader or buffer to decode from
+                 * @param [length] Message length if known beforehand
+                 * @returns LinkPreviewMetadata
+                 * @throws {Error} If the payload is not a reader or valid buffer
+                 * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                 */
+                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): proto.Message.ExtendedTextMessage.LinkPreviewMetadata;
+
+                /**
+                 * Decodes a LinkPreviewMetadata message from the specified reader or buffer, length delimited.
+                 * @param reader Reader or buffer to decode from
+                 * @returns LinkPreviewMetadata
+                 * @throws {Error} If the payload is not a reader or valid buffer
+                 * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                 */
+                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): proto.Message.ExtendedTextMessage.LinkPreviewMetadata;
+
+                /**
+                 * Verifies a LinkPreviewMetadata message.
+                 * @param message Plain object to verify
+                 * @returns `null` if valid, otherwise the reason why it is not
+                 */
+                public static verify(message: { [k: string]: any }): (string|null);
+
+                /**
+                 * Creates a LinkPreviewMetadata message from a plain object. Also converts values to their respective internal types.
+                 * @param object Plain object
+                 * @returns LinkPreviewMetadata
+                 */
+                public static fromObject(object: { [k: string]: any }): proto.Message.ExtendedTextMessage.LinkPreviewMetadata;
+
+                /**
+                 * Creates a plain object from a LinkPreviewMetadata message. Also converts values to other types if specified.
+                 * @param message LinkPreviewMetadata
+                 * @param [options] Conversion options
+                 * @returns Plain object
+                 */
+                public static toObject(message: proto.Message.ExtendedTextMessage.LinkPreviewMetadata, options?: $protobuf.IConversionOptions): { [k: string]: any };
+
+                /**
+                 * Converts this LinkPreviewMetadata to JSON.
+                 * @returns JSON object
+                 */
+                public toJSON(): { [k: string]: any };
+
+                /**
+                 * Gets the default type url for LinkPreviewMetadata
+                 * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+                 * @returns The default type url
+                 */
+                public static getTypeUrl(typeUrlPrefix?: string): string;
             }
 
             /** PreviewType enum. */
@@ -27140,6 +27636,315 @@ export namespace proto {
                 FBPAY = 1,
                 NOVI = 2,
                 UPI = 3
+            }
+        }
+
+        /** Properties of a PaymentLinkMetadata. */
+        interface IPaymentLinkMetadata {
+
+            /** PaymentLinkMetadata button */
+            button?: (proto.Message.PaymentLinkMetadata.IPaymentLinkButton|null);
+
+            /** PaymentLinkMetadata header */
+            header?: (proto.Message.PaymentLinkMetadata.IPaymentLinkHeader|null);
+        }
+
+        /** Represents a PaymentLinkMetadata. */
+        class PaymentLinkMetadata implements IPaymentLinkMetadata {
+
+            /**
+             * Constructs a new PaymentLinkMetadata.
+             * @param [properties] Properties to set
+             */
+            constructor(properties?: proto.Message.IPaymentLinkMetadata);
+
+            /** PaymentLinkMetadata button. */
+            public button?: (proto.Message.PaymentLinkMetadata.IPaymentLinkButton|null);
+
+            /** PaymentLinkMetadata header. */
+            public header?: (proto.Message.PaymentLinkMetadata.IPaymentLinkHeader|null);
+
+            /**
+             * Creates a new PaymentLinkMetadata instance using the specified properties.
+             * @param [properties] Properties to set
+             * @returns PaymentLinkMetadata instance
+             */
+            public static create(properties?: proto.Message.IPaymentLinkMetadata): proto.Message.PaymentLinkMetadata;
+
+            /**
+             * Encodes the specified PaymentLinkMetadata message. Does not implicitly {@link proto.Message.PaymentLinkMetadata.verify|verify} messages.
+             * @param message PaymentLinkMetadata message or plain object to encode
+             * @param [writer] Writer to encode to
+             * @returns Writer
+             */
+            public static encode(message: proto.Message.IPaymentLinkMetadata, writer?: $protobuf.Writer): $protobuf.Writer;
+
+            /**
+             * Encodes the specified PaymentLinkMetadata message, length delimited. Does not implicitly {@link proto.Message.PaymentLinkMetadata.verify|verify} messages.
+             * @param message PaymentLinkMetadata message or plain object to encode
+             * @param [writer] Writer to encode to
+             * @returns Writer
+             */
+            public static encodeDelimited(message: proto.Message.IPaymentLinkMetadata, writer?: $protobuf.Writer): $protobuf.Writer;
+
+            /**
+             * Decodes a PaymentLinkMetadata message from the specified reader or buffer.
+             * @param reader Reader or buffer to decode from
+             * @param [length] Message length if known beforehand
+             * @returns PaymentLinkMetadata
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): proto.Message.PaymentLinkMetadata;
+
+            /**
+             * Decodes a PaymentLinkMetadata message from the specified reader or buffer, length delimited.
+             * @param reader Reader or buffer to decode from
+             * @returns PaymentLinkMetadata
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): proto.Message.PaymentLinkMetadata;
+
+            /**
+             * Verifies a PaymentLinkMetadata message.
+             * @param message Plain object to verify
+             * @returns `null` if valid, otherwise the reason why it is not
+             */
+            public static verify(message: { [k: string]: any }): (string|null);
+
+            /**
+             * Creates a PaymentLinkMetadata message from a plain object. Also converts values to their respective internal types.
+             * @param object Plain object
+             * @returns PaymentLinkMetadata
+             */
+            public static fromObject(object: { [k: string]: any }): proto.Message.PaymentLinkMetadata;
+
+            /**
+             * Creates a plain object from a PaymentLinkMetadata message. Also converts values to other types if specified.
+             * @param message PaymentLinkMetadata
+             * @param [options] Conversion options
+             * @returns Plain object
+             */
+            public static toObject(message: proto.Message.PaymentLinkMetadata, options?: $protobuf.IConversionOptions): { [k: string]: any };
+
+            /**
+             * Converts this PaymentLinkMetadata to JSON.
+             * @returns JSON object
+             */
+            public toJSON(): { [k: string]: any };
+
+            /**
+             * Gets the default type url for PaymentLinkMetadata
+             * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+             * @returns The default type url
+             */
+            public static getTypeUrl(typeUrlPrefix?: string): string;
+        }
+
+        namespace PaymentLinkMetadata {
+
+            /** Properties of a PaymentLinkButton. */
+            interface IPaymentLinkButton {
+
+                /** PaymentLinkButton displayText */
+                displayText: string;
+            }
+
+            /** Represents a PaymentLinkButton. */
+            class PaymentLinkButton implements IPaymentLinkButton {
+
+                /**
+                 * Constructs a new PaymentLinkButton.
+                 * @param [properties] Properties to set
+                 */
+                constructor(properties?: proto.Message.PaymentLinkMetadata.IPaymentLinkButton);
+
+                /** PaymentLinkButton displayText. */
+                public displayText: string;
+
+                /**
+                 * Creates a new PaymentLinkButton instance using the specified properties.
+                 * @param [properties] Properties to set
+                 * @returns PaymentLinkButton instance
+                 */
+                public static create(properties?: proto.Message.PaymentLinkMetadata.IPaymentLinkButton): proto.Message.PaymentLinkMetadata.PaymentLinkButton;
+
+                /**
+                 * Encodes the specified PaymentLinkButton message. Does not implicitly {@link proto.Message.PaymentLinkMetadata.PaymentLinkButton.verify|verify} messages.
+                 * @param message PaymentLinkButton message or plain object to encode
+                 * @param [writer] Writer to encode to
+                 * @returns Writer
+                 */
+                public static encode(message: proto.Message.PaymentLinkMetadata.IPaymentLinkButton, writer?: $protobuf.Writer): $protobuf.Writer;
+
+                /**
+                 * Encodes the specified PaymentLinkButton message, length delimited. Does not implicitly {@link proto.Message.PaymentLinkMetadata.PaymentLinkButton.verify|verify} messages.
+                 * @param message PaymentLinkButton message or plain object to encode
+                 * @param [writer] Writer to encode to
+                 * @returns Writer
+                 */
+                public static encodeDelimited(message: proto.Message.PaymentLinkMetadata.IPaymentLinkButton, writer?: $protobuf.Writer): $protobuf.Writer;
+
+                /**
+                 * Decodes a PaymentLinkButton message from the specified reader or buffer.
+                 * @param reader Reader or buffer to decode from
+                 * @param [length] Message length if known beforehand
+                 * @returns PaymentLinkButton
+                 * @throws {Error} If the payload is not a reader or valid buffer
+                 * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                 */
+                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): proto.Message.PaymentLinkMetadata.PaymentLinkButton;
+
+                /**
+                 * Decodes a PaymentLinkButton message from the specified reader or buffer, length delimited.
+                 * @param reader Reader or buffer to decode from
+                 * @returns PaymentLinkButton
+                 * @throws {Error} If the payload is not a reader or valid buffer
+                 * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                 */
+                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): proto.Message.PaymentLinkMetadata.PaymentLinkButton;
+
+                /**
+                 * Verifies a PaymentLinkButton message.
+                 * @param message Plain object to verify
+                 * @returns `null` if valid, otherwise the reason why it is not
+                 */
+                public static verify(message: { [k: string]: any }): (string|null);
+
+                /**
+                 * Creates a PaymentLinkButton message from a plain object. Also converts values to their respective internal types.
+                 * @param object Plain object
+                 * @returns PaymentLinkButton
+                 */
+                public static fromObject(object: { [k: string]: any }): proto.Message.PaymentLinkMetadata.PaymentLinkButton;
+
+                /**
+                 * Creates a plain object from a PaymentLinkButton message. Also converts values to other types if specified.
+                 * @param message PaymentLinkButton
+                 * @param [options] Conversion options
+                 * @returns Plain object
+                 */
+                public static toObject(message: proto.Message.PaymentLinkMetadata.PaymentLinkButton, options?: $protobuf.IConversionOptions): { [k: string]: any };
+
+                /**
+                 * Converts this PaymentLinkButton to JSON.
+                 * @returns JSON object
+                 */
+                public toJSON(): { [k: string]: any };
+
+                /**
+                 * Gets the default type url for PaymentLinkButton
+                 * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+                 * @returns The default type url
+                 */
+                public static getTypeUrl(typeUrlPrefix?: string): string;
+            }
+
+            /** Properties of a PaymentLinkHeader. */
+            interface IPaymentLinkHeader {
+
+                /** PaymentLinkHeader headerType */
+                headerType: proto.Message.PaymentLinkMetadata.PaymentLinkHeader.PaymentLinkHeaderType;
+            }
+
+            /** Represents a PaymentLinkHeader. */
+            class PaymentLinkHeader implements IPaymentLinkHeader {
+
+                /**
+                 * Constructs a new PaymentLinkHeader.
+                 * @param [properties] Properties to set
+                 */
+                constructor(properties?: proto.Message.PaymentLinkMetadata.IPaymentLinkHeader);
+
+                /** PaymentLinkHeader headerType. */
+                public headerType: proto.Message.PaymentLinkMetadata.PaymentLinkHeader.PaymentLinkHeaderType;
+
+                /**
+                 * Creates a new PaymentLinkHeader instance using the specified properties.
+                 * @param [properties] Properties to set
+                 * @returns PaymentLinkHeader instance
+                 */
+                public static create(properties?: proto.Message.PaymentLinkMetadata.IPaymentLinkHeader): proto.Message.PaymentLinkMetadata.PaymentLinkHeader;
+
+                /**
+                 * Encodes the specified PaymentLinkHeader message. Does not implicitly {@link proto.Message.PaymentLinkMetadata.PaymentLinkHeader.verify|verify} messages.
+                 * @param message PaymentLinkHeader message or plain object to encode
+                 * @param [writer] Writer to encode to
+                 * @returns Writer
+                 */
+                public static encode(message: proto.Message.PaymentLinkMetadata.IPaymentLinkHeader, writer?: $protobuf.Writer): $protobuf.Writer;
+
+                /**
+                 * Encodes the specified PaymentLinkHeader message, length delimited. Does not implicitly {@link proto.Message.PaymentLinkMetadata.PaymentLinkHeader.verify|verify} messages.
+                 * @param message PaymentLinkHeader message or plain object to encode
+                 * @param [writer] Writer to encode to
+                 * @returns Writer
+                 */
+                public static encodeDelimited(message: proto.Message.PaymentLinkMetadata.IPaymentLinkHeader, writer?: $protobuf.Writer): $protobuf.Writer;
+
+                /**
+                 * Decodes a PaymentLinkHeader message from the specified reader or buffer.
+                 * @param reader Reader or buffer to decode from
+                 * @param [length] Message length if known beforehand
+                 * @returns PaymentLinkHeader
+                 * @throws {Error} If the payload is not a reader or valid buffer
+                 * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                 */
+                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): proto.Message.PaymentLinkMetadata.PaymentLinkHeader;
+
+                /**
+                 * Decodes a PaymentLinkHeader message from the specified reader or buffer, length delimited.
+                 * @param reader Reader or buffer to decode from
+                 * @returns PaymentLinkHeader
+                 * @throws {Error} If the payload is not a reader or valid buffer
+                 * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                 */
+                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): proto.Message.PaymentLinkMetadata.PaymentLinkHeader;
+
+                /**
+                 * Verifies a PaymentLinkHeader message.
+                 * @param message Plain object to verify
+                 * @returns `null` if valid, otherwise the reason why it is not
+                 */
+                public static verify(message: { [k: string]: any }): (string|null);
+
+                /**
+                 * Creates a PaymentLinkHeader message from a plain object. Also converts values to their respective internal types.
+                 * @param object Plain object
+                 * @returns PaymentLinkHeader
+                 */
+                public static fromObject(object: { [k: string]: any }): proto.Message.PaymentLinkMetadata.PaymentLinkHeader;
+
+                /**
+                 * Creates a plain object from a PaymentLinkHeader message. Also converts values to other types if specified.
+                 * @param message PaymentLinkHeader
+                 * @param [options] Conversion options
+                 * @returns Plain object
+                 */
+                public static toObject(message: proto.Message.PaymentLinkMetadata.PaymentLinkHeader, options?: $protobuf.IConversionOptions): { [k: string]: any };
+
+                /**
+                 * Converts this PaymentLinkHeader to JSON.
+                 * @returns JSON object
+                 */
+                public toJSON(): { [k: string]: any };
+
+                /**
+                 * Gets the default type url for PaymentLinkHeader
+                 * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+                 * @returns The default type url
+                 */
+                public static getTypeUrl(typeUrlPrefix?: string): string;
+            }
+
+            namespace PaymentLinkHeader {
+
+                /** PaymentLinkHeaderType enum. */
+                enum PaymentLinkHeaderType {
+                    LINK_PREVIEW = 0,
+                    ORDER = 1
+                }
             }
         }
 
@@ -32939,9 +33744,6 @@ export namespace proto {
 
             /** VideoMessage processedVideos */
             processedVideos?: (proto.IProcessedVideo[]|null);
-
-            /** VideoMessage externalShareFullVideoDurationInSeconds */
-            externalShareFullVideoDurationInSeconds?: (number|null);
         }
 
         /** Represents a VideoMessage. */
@@ -33030,9 +33832,6 @@ export namespace proto {
 
             /** VideoMessage processedVideos. */
             public processedVideos: proto.IProcessedVideo[];
-
-            /** VideoMessage externalShareFullVideoDurationInSeconds. */
-            public externalShareFullVideoDurationInSeconds?: (number|null);
 
             /**
              * Creates a new VideoMessage instance using the specified properties.
@@ -33502,7 +34301,9 @@ export namespace proto {
             STATUS_NOTIFICATION = 9,
             HD_IMAGE_DUAL_UPLOAD = 10,
             STICKER_ANNOTATION = 11,
-            MOTION_PHOTO = 12
+            MOTION_PHOTO = 12,
+            STATUS_LINK_ACTION = 13,
+            VIEW_ALL_REPLIES = 14
         }
     }
 
