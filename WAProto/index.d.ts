@@ -27748,7 +27748,7 @@ export namespace proto {
             interface IPaymentLinkButton {
 
                 /** PaymentLinkButton displayText */
-                displayText: string;
+                displayText?: (string|null);
             }
 
             /** Represents a PaymentLinkButton. */
@@ -27761,7 +27761,7 @@ export namespace proto {
                 constructor(properties?: proto.Message.PaymentLinkMetadata.IPaymentLinkButton);
 
                 /** PaymentLinkButton displayText. */
-                public displayText: string;
+                public displayText?: (string|null);
 
                 /**
                  * Creates a new PaymentLinkButton instance using the specified properties.
@@ -27845,7 +27845,7 @@ export namespace proto {
             interface IPaymentLinkHeader {
 
                 /** PaymentLinkHeader headerType */
-                headerType: proto.Message.PaymentLinkMetadata.PaymentLinkHeader.PaymentLinkHeaderType;
+                headerType?: (proto.Message.PaymentLinkMetadata.PaymentLinkHeader.PaymentLinkHeaderType|null);
             }
 
             /** Represents a PaymentLinkHeader. */
@@ -27858,7 +27858,7 @@ export namespace proto {
                 constructor(properties?: proto.Message.PaymentLinkMetadata.IPaymentLinkHeader);
 
                 /** PaymentLinkHeader headerType. */
-                public headerType: proto.Message.PaymentLinkMetadata.PaymentLinkHeader.PaymentLinkHeaderType;
+                public headerType?: (proto.Message.PaymentLinkMetadata.PaymentLinkHeader.PaymentLinkHeaderType|null);
 
                 /**
                  * Creates a new PaymentLinkHeader instance using the specified properties.
@@ -33744,6 +33744,9 @@ export namespace proto {
 
             /** VideoMessage processedVideos */
             processedVideos?: (proto.IProcessedVideo[]|null);
+
+            /** VideoMessage externalShareFullVideoDurationInSeconds */
+            externalShareFullVideoDurationInSeconds?: (number|null);
         }
 
         /** Represents a VideoMessage. */
@@ -33832,6 +33835,9 @@ export namespace proto {
 
             /** VideoMessage processedVideos. */
             public processedVideos: proto.IProcessedVideo[];
+
+            /** VideoMessage externalShareFullVideoDurationInSeconds. */
+            public externalShareFullVideoDurationInSeconds?: (number|null);
 
             /**
              * Creates a new VideoMessage instance using the specified properties.
@@ -34295,7 +34301,7 @@ export namespace proto {
             EVENT_COVER_IMAGE = 3,
             STATUS_POLL = 4,
             HD_VIDEO_DUAL_UPLOAD = 5,
-            STATUS_TAPPABLE_MESSAGE = 6,
+            STATUS_EXTERNAL_RESHARE = 6,
             MEDIA_POLL = 7,
             STATUS_ADD_YOURS = 8,
             STATUS_NOTIFICATION = 9,

@@ -21,6 +21,7 @@ const Utils_1 = require("../Utils");
 const make_mutex_1 = require("../Utils/make-mutex");
 const process_message_1 = __importDefault(require("../Utils/process-message"));
 const WABinary_1 = require("../WABinary");
+const WAUSync_1 = require("../WAUSync");
 const socket_1 = require("./socket");
 const MAX_SYNC_ATTEMPTS = 2;
 const makeChatsSocket = (config) => {
@@ -148,6 +149,36 @@ const makeChatsSocket = (config) => {
         const users = (0, WABinary_1.getBinaryNodeChildren)(listNode, 'user');
         return users;
     });
+
+    const getBotListV2 = async () => {
+        const resp = await query({
+            tag: 'iq',
+            attrs: {
+                xmlns: 'bot',
+                to: WABinary_1.S_WHATSAPP_NET,
+                type: 'get'
+            },
+            content: [{
+                    tag: 'bot',
+                    attrs: {
+                        v: '2'
+                    }
+                }]
+        });
+        const botNode = (0, WABinary_1.getBinaryNodeChild)(resp, 'bot');
+        const botList = [];
+        for (const section of (0, WABinary_1.getBinaryNodeChildren)(botNode, 'section')) {
+            if (section.attrs.type === 'all') {
+                for (const bot of (0, WABinary_1.getBinaryNodeChildren)(section, 'bot')) {
+                    botList.push({
+                        jid: bot.attrs.jid,
+                        personaId: bot.attrs['persona_id']
+                    });
+                }
+            }
+        }
+        return botList;
+    };
     const onWhatsApp = (...jids) => __awaiter(void 0, void 0, void 0, function* () {
         const query = { tag: 'contact', attrs: {} };
         const list = jids.map((jid) => {
@@ -842,6 +873,7 @@ const makeChatsSocket = (config) => {
         fetchPrivacySettings,
         upsertMessage,
         appPatch,
+        getBotListV2,
         sendPresenceUpdate,
         presenceSubscribe,
         profilePictureUrl,

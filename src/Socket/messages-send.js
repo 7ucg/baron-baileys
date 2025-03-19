@@ -21,6 +21,7 @@ const Defaults_1 = require("../Defaults");
 const Utils_1 = require("../Utils");
 const link_preview_1 = require("../Utils/link-preview");
 const WABinary_1 = require("../WABinary");
+const WAUSync_1 = require("../WAUSync");
 const newsletter_1 = require("./newsletter");
 var ListType = WAProto_1.proto.Message.ListMessage.ListType;
 const makeMessagesSocket = (config) => {
