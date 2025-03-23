@@ -802,7 +802,7 @@ export const processSyncAction = (
 
 		ev.emit('messages.update', [
 			{
-				key: { remoteJid: id, id: msgId, fromMe: fromMe === '1', devices: getDevice(msgId) },
+				key: { remoteJid: id, id: msgId, fromMe: fromMe === '1' },
 				update: { starred }
 			}
 		])

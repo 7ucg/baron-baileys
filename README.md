@@ -807,7 +807,7 @@ await conn.sendAlbumMessage(
 
 ### Status Mentions Message
 ```ts
-await conn.sendStatusMentions(
+await sock.sendStatusMentions(
     {
       image: {
        url: 'url.jpg'
@@ -818,14 +818,14 @@ await conn.sendStatusMentions(
 )
 
 // Use this if you want private mentions
-await conn.sendStatusMentions(
+await sock.sendStatusMentions(
     {
       image: {
        url: 'https://example.com.jpg'
        }, 
        caption: 'Hi'
     }, 
-    '628xxx@s.whatsapp.net', 
+    '123xxx@s.whatsapp.net', 
      true
 )
 ```
@@ -948,7 +948,7 @@ await sock.sendMessage(
             url: 'https://example.com',
             productImageCount: 1
         },
-        businessOwnerJid: '628xxx@s.whatsapp.net',
+        businessOwnerJid: '123xxx@s.whatsapp.net',
         caption: 'Body',
         title: 'Title', 
         subtitle: 'Subtitle', 
@@ -1085,7 +1085,7 @@ await sock.sendMessage(
             url: 'https://example.com',
             productImageCount: 1
         },
-        businessOwnerJid: '628xxx@s.whatsapp.net',
+        businessOwnerJid: '123xxx@s.whatsapp.net',
         caption: 'Body',
         title: 'Title', 
         subtitle: 'Subtitle', 
