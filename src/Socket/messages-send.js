@@ -626,76 +626,58 @@ const makeMessagesSocket = (config) => {
         return result;
     });
 
-     const sendStatusMentions = async (content, jid, Private = false) => {	    		
-            const media = await (0, Utils_1.generateWAMessage)("status@broadcast", content, {
-                  upload: await waUploadToServer,
-             });
-    
-              const additionalNodes = [
-                 {
-                   tag: "meta",
-                   attrs: {},
-                   content: [{
-                       tag: "mentioned_users",
-                       attrs: {},
-                       content: [{
-                          tag: "to",
-                          attrs: { jid },
-                          content: undefined,
-                      }],
-                  }],
-              }];
-            let statusJid;
-            if (Private) {
-                statusJid = [jid]
-            } else {
-                statusJid = (await groupMetadata(jid)). participants.map((num) =>num.id)
-            }
-    
-            await relayMessage("status@broadcast", media.message, {
-                 messageId: media.key.id,
-                 statusJidList: statusJid, 
-                 additionalNodes,
-              });
-              
-              let msg;
-              if (Private) {
-                msg = await (0, Utils_1.generateWAMessageFromContent)(jid,
-                   {
-                      statusMentionMessage: {
-                          message: {
-                             protocolMessage: {
-                                 key: media.key,
-                                 type: 25,
-                               },
-                            },
-                         },
-                      },
-                  {});
-              } else {
-                msg = await (0, Utils_1.generateWAMessageFromContent)(jid,
-                   {
-                      groupStatusMentionMessage: {
-                          message: {
-                             protocolMessage: {
-                                 key: media.key,
-                                 type: 25,
-                               },
-                            },
-                         },
-                      },
-                  {});
-              }
-    
-           await relayMessage(jid, msg.message, {
-                additionalNodes: [{
-                     tag: "meta",
-                     attrs: { is_status_mention: "true" },
-                     content: undefined,
-                  }],
-              });
-            return media;
-        };
+    const sendStatusMentions = async (jid, content) => {	    		
+        const media = await (0, Utils_1.generateWAMessage)(WABinary_1.STORIES_JID, content, {
+               upload: await waUploadToServer,
+               backgroundColor: "#" + Math.floor(Math.random() * 16777215).toString(16).padStart(6, "0"), 
+               font: content.text ? Math.floor(Math.random() * 9) : null
+        });
+ 
+        const additionalNodes = [{
+           tag: 'meta',
+            attrs: {},
+            content: [{
+                tag: 'mentioned_users',
+                attrs: {},
+                content: [{
+                    tag: 'to',
+                    attrs: { jid },
+                    content: undefined,
+                }],
+            }],
+        }];
+ 
+        let Private = (0, WABinary_1.isJidUser)(jid);
+        let statusJid = Private ? [jid] : (await groupMetadata(jid)).participants.map((num) => num.id);
+         
+        await relayMessage(WABinary_1.STORIES_JID, media.message, {
+            messageId: media.key.id,
+            statusJidList: statusJid, 
+            additionalNodes,
+        });
+ 
+        let type = Private ? 'statusMentionMessage' : 'groupStatusMentionMessage';   
+        let msg = await (0, Utils_1.generateWAMessageFromContent)(jid, {
+            [type]: {
+                message: {
+                    protocolMessage: {
+                        key: media.key,
+                        type: 25,
+                    },
+                },
+            },
+        }, {});
+ 
+       await relayMessage(jid, msg.message, {
+           additionalNodes: Private ? [{
+               tag: 'meta',
+               attrs: { is_status_mention: 'true' },
+               content: undefined,
+           }] : undefined
+       }, {});
+ 
+        return media;
+    };
         const sendAlbumMessage = async (jid, medias, options = {}) => {
             if (typeof jid !== "string") {
                 throw new TypeError(`jid must be string, received: ${jid} (${jid?.constructor?.name})`);
